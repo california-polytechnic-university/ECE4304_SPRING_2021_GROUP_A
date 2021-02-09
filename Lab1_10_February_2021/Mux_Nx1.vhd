@@ -56,43 +56,35 @@ component Mux_2x1
     );
 end component;
 
--- Declare 2D std_logic array and instantiate it to 0
-type LOGIC_ARRAY is array (0 to SEL_SIZE-1, 0 to IN_SIZE-1) of std_logic;
-signal INTERMEDIATE_CARRY : LOGIC_ARRAY := (others => (others => '0'));
+-- Declare 2D std_logic array
+type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to IN_SIZE-1) of std_logic;
+signal INTERNAL_CARRY : LOGIC_ARRAY;
 
 begin
 
+    -- Initialize first row with input values
+    INITIALIZE: for a in 0 to IN_SIZE-1 generate
+        INTERNAL_CARRY(0, a) <= N_A(a);
+    end generate INITIALIZE;
+
+
     -- Outter for-generate loop. Runs loop for amount of stages (SEL_SIZE)
     STAGES: for i in 0 to SEL_SIZE-1 generate
-        
+    
         -- Inner for-generate loop. Runs loop for amount of muxes per stage (Calculated by 2^(SEL_SIZE-1-STAGE))
         MUXES: for j in 0 to (2**(SEL_SIZE-1-i))-1 generate
-            
-            -- Special generate for the muxes in the first stage, take input N_A.
-            STAGE_FIRST: if( i = 0 ) generate
-                MUX_FIRST: Mux_2x1 port map(
-                    A   =>  N_A(2 * j),
-                    B   =>  N_A(2 * j + 1),
-                    SEL =>  N_SEL(i),
-                    X   =>  INTERMEDIATE_CARRY(i, j)
-                );
-            end generate STAGE_FIRST;
-            
-            -- Generate for the muxes in all other stages, take input from 2D array and output to it.
-            STAGE_INTERMEDIATE: if (i > 0) and (i <= SEL_SIZE-1) generate
-                MUX_INTERMEDIATE: Mux_2x1 port map(
-                    A   =>  INTERMEDIATE_CARRY(i - 1, 2 * j),
-                    B   =>  INTERMEDIATE_CARRY(i - 1, 2 * j + 1),
-                    SEL =>  N_SEL(i),
-                    X   =>  INTERMEDIATE_CARRY(i, j)
-                );           
-            end generate STAGE_INTERMEDIATE;       
-        
-        end generate MUXES;
+            -- Generate mux, take input from 2D array and output to it.
+            MUX_INTERMEDIATE: Mux_2x1 port map(
+                A   =>  INTERNAL_CARRY(i, 2 * j),
+                B   =>  INTERNAL_CARRY(i, 2 * j + 1),
+                SEL =>  N_SEL(i),
+                X   =>  INTERNAL_CARRY(i + 1, j)
+            );           
+        end generate MUXES; 
         
     end generate STAGES;
 
     -- Assign output to last row in memory
-    N_X <= INTERMEDIATE_CARRY(SEL_SIZE-1, 0);
+    N_X <= INTERNAL_CARRY(SEL_SIZE, 0);
 
 end Behavioral;
