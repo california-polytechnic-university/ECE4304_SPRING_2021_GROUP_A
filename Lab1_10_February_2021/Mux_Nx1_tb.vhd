@@ -35,8 +35,8 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Mux_Nx1_tb is
     generic(
-        N:integer := 32;
-        LOG2N:integer := 5
+        IN_SIZE :integer := 16;
+        SEL_SIZE:integer := 4
     );
 end Mux_Nx1_tb;
 
@@ -44,20 +44,20 @@ architecture Behavioral of Mux_Nx1_tb is
 
 component Mux_Nx1
     generic(
-        N:integer := 32;
-        LOG2N:integer := 5
+        IN_SIZE :integer := 16;
+        SEL_SIZE:integer := 4
     );
 
     Port ( 
-        N_A:    in std_logic_vector(N-1 downto 0);
-        N_SEL:  in std_logic_vector(LOG2N-1 downto 0);
+        N_A:    in std_logic_vector(IN_SIZE-1 downto 0);
+        N_SEL:  in std_logic_vector(SEL_SIZE-1 downto 0);
         
         N_X:    out std_logic
     );
 end component;
 
-signal A_tb     : std_logic_vector(N-1 downto 0);
-signal SEL_tb   : std_logic_vector(LOG2N-1 downto 0) := (others => '0');
+signal A_tb     : std_logic_vector(IN_SIZE-1 downto 0);
+signal SEL_tb   : std_logic_vector(SEL_SIZE-1 downto 0) := (others => '0');
 signal X_tb     : std_logic;
 
 constant clock_period:time:= 10ns;
@@ -73,8 +73,8 @@ begin
 
     TSB_CASE: process
     begin
-        A_tb(N-1 downto 0) <= b"10010110110011001001011011001100";
-        for i in 0 to N-1 loop
+        A_tb(IN_SIZE-1 downto 0) <= b"1001000011000110";
+        for i in 0 to IN_SIZE-1 loop
             wait for clock_period;
             SEL_tb <= SEL_tb + 1;
         end loop;
