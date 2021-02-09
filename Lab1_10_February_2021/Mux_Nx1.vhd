@@ -22,6 +22,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use IEEE.math_real."ceil";
+use IEEE.math_real."log2";
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -33,18 +35,19 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Mux_Nx1 is
     generic(
-        IN_SIZE :integer := 16;
-        SEL_SIZE:integer := 4
+        IN_SIZE :integer := 16
     );
 
     Port ( 
         N_A     : in std_logic_vector(IN_SIZE-1 downto 0);
-        N_SEL   : in std_logic_vector(SEL_SIZE-1 downto 0);
+        N_SEL   : in std_logic_vector(integer(ceil(log2(real(IN_SIZE))))-1 downto 0);
         N_X     : out std_logic
     );
 end Mux_Nx1;
 
 architecture Behavioral of Mux_Nx1 is
+
+constant SEL_SIZE: integer := integer(ceil(log2(real(IN_SIZE))));
 
 -- Declare 2x1 mux component
 component Mux_2x1
@@ -56,9 +59,9 @@ component Mux_2x1
     );
 end component;
 
--- Declare 2D std_logic array
-type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to IN_SIZE-1) of std_logic;
-signal INTERNAL_CARRY : LOGIC_ARRAY;
+-- Declare 2D std_logic array, instantiate to 'X' to catch out of bound values
+type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to 2**SEL_SIZE-1) of std_logic;
+signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => 'X'));
 
 begin
 
