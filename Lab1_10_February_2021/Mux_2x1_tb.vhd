@@ -39,13 +39,15 @@ architecture Behavioral of Mux_2x1_tb is
 
 component Mux_2x1
     Port(
-        A   :   in std_logic_vector(1 downto 0);
+        A   :   in std_logic;
+        B   :   in std_logic;
         SEL :   in std_logic;
         X   :   out std_logic   
     );
 end component;
 
 signal A_tb     : std_logic;
+signal B_tb     : std_logic;
 signal SEL_tb   : std_logic;
 signal X_tb     : std_logic;
 
@@ -55,6 +57,7 @@ begin
     
     MUX_TB: Mux_2x1 port map(
         A   => A_tb,
+        B   => B_tb,
         SEL => SEL_tb,
         X   => X_tb
     );         
@@ -62,7 +65,7 @@ begin
     TSB_CASE: process
     begin
         A_tb    <= '0';
-        A_tb    <= '0';
+        B_tb    <= '0';
         SEL_tb  <= '0';
         wait for clock_period;
         A_tb    <= '1';
