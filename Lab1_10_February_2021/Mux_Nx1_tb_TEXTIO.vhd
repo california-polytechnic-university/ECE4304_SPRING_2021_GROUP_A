@@ -23,6 +23,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.math_real."ceil";
+use IEEE.math_real."log2";
 use STD.textio.all; 
 use IEEE.std_logic_textio.all; 
 
@@ -37,12 +39,12 @@ use IEEE.std_logic_textio.all;
 
 entity Mux_Nx1_tb_TEXTIO is
     generic(
-        IN_SIZE :integer := 13;
-        SEL_SIZE:integer := 4
+        IN_SIZE_TB :integer := 13 
     );
 end Mux_Nx1_tb_TEXTIO;
 
 architecture Behavioral of Mux_Nx1_tb_TEXTIO is
+constant SEL_SIZE_TB: integer := integer(ceil(log2(real(IN_SIZE))));
 component Mux_Nx1
     generic(
         IN_SIZE :integer := 13
@@ -50,13 +52,13 @@ component Mux_Nx1
 
     Port ( 
         N_A:    in std_logic_vector(IN_SIZE-1 downto 0);
-        N_SEL:  in std_logic_vector(SEL_SIZE-1 downto 0);
+        N_SEL:  in std_logic_vector(ceil(log2(real(IN_SIZE))))-1 downto 0);
         
         N_X:    out std_logic
     );
 end component;
-signal A_tb     : std_logic_vector(IN_SIZE-1 downto 0);
-signal SEL_tb   : std_logic_vector(SEL_SIZE-1 downto 0) := (others => '0');
+signal A_tb     : std_logic_vector(IN_SIZE_TB-1 downto 0);
+signal SEL_tb   : std_logic_vector(SEL_SIZE_TB-1 downto 0) := (others => '0');
 signal X_tb     : std_logic;
 
 constant clock_period:time:= 10ns;
@@ -66,6 +68,9 @@ file file_results: text;
 
 begin
     MUX_TB: Mux_Nx1 
+    generic map(
+        IN_SIZE => IN_SIZE_TB
+    )
     port map(
         N_A   => A_tb,
         N_SEL => SEL_tb,
@@ -83,8 +88,8 @@ begin
     v_A := (others => '0');
     v_SEL := (others => '0');
     v_space := '0';
-    file_open(file_vectors,"C:\Users\magno\OneDrive\Documents\College_CPP\VHDL\lab1_input.txt" , read_mode);     
-    file_open(file_results,"C:\Users\magno\OneDrive\Documents\College_CPP\VHDL\lab1_output.txt" , write_mode);
+    file_open(file_vectors,"C:\Users\magno\OneDrive\Documents\College_CPP\VHDL\lab1_edge_input.txt" , read_mode);     
+    file_open(file_results,"C:\Users\magno\OneDrive\Documents\College_CPP\VHDL\lab1_edge_output.txt" , write_mode);
     
     while not endfile(file_vectors) loop
         readline(file_vectors, v_ILINE);
