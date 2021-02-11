@@ -52,7 +52,7 @@ component Mux_Nx1
 
     Port ( 
         N_A:    in std_logic_vector(IN_SIZE-1 downto 0);
-        N_SEL:  in std_logic_vector(ceil(log2(real(IN_SIZE))))-1 downto 0);
+        N_SEL:  in std_logic_vector(integer(ceil(log2(real(IN_SIZE)))))-1 downto 0);
         
         N_X:    out std_logic
     );
