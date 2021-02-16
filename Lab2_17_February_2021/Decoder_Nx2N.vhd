@@ -51,26 +51,35 @@ component Decoder_2x4
     );
 end component;
 
+-- Calculation for amount of stage numbers, rounds down for odd values of IN_SIZE
 constant STAGE_NUMBER: integer := (IN_SIZE)/2; 
 
-signal INTERNAL_CARRY   : std_logic_vector((2**IN_SIZE)*(STAGE_NUMBER+1)-1 downto 0) := (others => '0');
-signal SEL_CARRY        : std_logic_vector(IN_SIZE-1 downto 0) := (others => '0');
+-- Array declaration, INTERNAL_CARRY holds the enables for the decoders in each stage
+type LOGIC_ARRAY is array (0 to STAGE_NUMBER) of std_logic_vector( 2**IN_SIZE-1 downto 0);
+signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => '0'));
+
+-- SEL_CARRY holds the SELECT values for each stage
+signal SEL_CARRY : std_logic_vector(IN_SIZE-1 downto 0) := (others => '0');
 
 begin    
     
+    -- CASE_EVEN generates when IN_SIZE is even
     CASE_EVEN: if( IN_SIZE mod 2 = 0 )  generate
     
-        SEL_CARRY(IN_SIZE-1 downto 0) <= A;
-        INTERNAL_CARRY(1 downto 0) <= "11"; 
+        SEL_CARRY(IN_SIZE-1 downto 0) <= A; -- Input A is used in every stage
+        INTERNAL_CARRY(0)(0) <= '1';        -- First stage decoder is enabled
     
+        -- DECODER generation for each stage
+        -- Enabled is used from current row in INTERNAL_CARRY, output is used for next row
+        -- Calculation for amount of decoders differs from CASE_ODD
         STAGE_EVEN: for i in 0 to STAGE_NUMBER-1 generate
         
             DECODERS_EVEN: for j in 0 to 2**(i * 2)-1 generate
             
                 DECODER_INST: Decoder_2x4 port map(
                     A => SEL_CARRY(IN_SIZE-(2*i)-1 downto IN_SIZE-(2*i)-2),
-                    E => INTERNAL_CARRY((2**IN_SIZE)*i + j),
-                    X => INTERNAL_CARRY((2**IN_SIZE)*(i+1) + (4*j) + 3 downto (2**IN_SIZE)*(i+1) + (4*j))
+                    E => INTERNAL_CARRY(i)(j),
+                    X => INTERNAL_CARRY(i+1)(4*j + 3 downto 4*j) 
                 );
             
             end generate DECODERS_EVEN;
@@ -79,19 +88,23 @@ begin
     
     end generate CASE_EVEN;
 
+    -- CASE_ODD generates when IN_SIZE is odd
     CASE_ODD: if( IN_SIZE mod 2 = 1 ) generate
     
-        SEL_CARRY(IN_SIZE-1 downto 0) <= A(IN_SIZE-2 downto 0) & '0';
-        INTERNAL_CARRY(1 downto 0) <= A(IN_SIZE-1) & not A(IN_SIZE-1); 
+        SEL_CARRY(IN_SIZE-1 downto 0) <= A(IN_SIZE-2 downto 0) & '0';       -- Input A is not used as a SEL, remove and pad with '0'
+        INTERNAL_CARRY(0)(1 downto 0) <= A(IN_SIZE-1) & not A(IN_SIZE-1);   -- First stage decoders enable depend on Input A
         
+        -- DECODER generation for each stage
+        -- Enabled is used from current row in INTERNAL_CARRY, output is used for next row
+        -- Calculation for amount of decoders in a stage differs from CASE_EVEN
         STAGE_ODD: for i in 0 to STAGE_NUMBER-1 generate
         
            DECODERS_ODD: for j in 0 to (2**(i * 2 + 1))-1 generate
                 
                 DECODER_INST: Decoder_2x4 port map(
                     A => SEL_CARRY(IN_SIZE-(2*i)-1 downto IN_SIZE-(2*i)-2),
-                    E => INTERNAL_CARRY((2**IN_SIZE)*i + j),
-                    X => INTERNAL_CARRY((2**IN_SIZE)*(i+1) + (4*j) + 3 downto (2**IN_SIZE)*(i+1) + (4*j))
+                    E => INTERNAL_CARRY(i)(j),
+                    X => INTERNAL_CARRY(i+1)(4*j + 3 downto 4*j) 
                 );
                 
             end generate DECODERS_ODD;
@@ -100,6 +113,7 @@ begin
         
     end generate CASE_ODD;
 
-    X <= INTERNAL_CARRY((2**IN_SIZE)*(STAGE_NUMBER+1)-1 downto (2**IN_SIZE)*(STAGE_NUMBER+1)-(2**IN_SIZE));      
+    -- Assign output X from last row of INTERNAL_CARRY
+    X <= INTERNAL_CARRY(STAGE_NUMBER)(2**IN_SIZE-1 downto 0);     
 
 end Behavioral;
