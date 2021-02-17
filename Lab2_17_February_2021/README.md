@@ -6,7 +6,7 @@ Submitted by Group A - Yuta Akiya, Kyle Le, Megan Luong
  For the simulation, the testbench included the use of the textio library for importing a stream of inputs to the simulation and storing the output into a separate text file.
 
 # Board Implementation
-Since the Nexys A7 100T FPGA only has 16 LED outputs, the generic mux from Lab 1 has to be used and modified in order to cycle between the 32 inputs of the 5x32 decoder.
+Since the Nexys A7 100T FPGA only has 16 LED outputs, a generic switch has to be used in order to cycle between the 32 inputs of the 5x32 decoder.
 
 ## Video Demonstration Link
-*To be added*
+https://youtu.be/cjkCATmSFAQ
