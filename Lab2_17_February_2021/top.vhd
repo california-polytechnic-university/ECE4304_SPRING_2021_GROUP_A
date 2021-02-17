@@ -36,7 +36,7 @@ use IEEE.math_real."log2";
 
 entity Decoder_Limited_IO is
   generic(
-            TOP_IN_SIZE: integer:= 6;
+            TOP_IN_SIZE: integer:= 5;
             TOP_WIDTH: integer  := 16
             );
   Port (
@@ -48,6 +48,7 @@ end Decoder_Limited_IO;
 
 architecture Behavioral of Decoder_Limited_IO is
 
+-- Call Nx2^N Decoder
 component Decoder_Nx2N
     generic(
         IN_SIZE : integer:= 5
@@ -58,6 +59,7 @@ component Decoder_Nx2N
     );
 end component Decoder_Nx2N;
 
+-- Call Nbit_Nx1 Mux
 component Mux_Nbit_Nx1
     generic(
         IN_SIZE : integer:= 5;
@@ -70,21 +72,29 @@ component Mux_Nbit_Nx1
     );
 end component Mux_Nbit_Nx1;
 
-signal decoder_x: std_logic_vector(2**(top_IN_SIZE)-1 downto 0);
+-- Output of DECODER_COMP
+signal DECODER_X: std_logic_vector(2**(top_IN_SIZE)-1 downto 0);
 
 begin
 
-DECODER_COMP: Decoder_Nx2N generic map (IN_SIZE => top_IN_SIZE)
-                           port map (
-                                        A => TOP_A,
-                                        X(2**(top_IN_SIZE)-1 downto 0) => decoder_x  
-                                        );
-MUX_COMP: Mux_Nbit_Nx1 generic map (IN_SIZE => top_IN_SIZE, WIDTH => top_WIDTH)
-                  port map (
-                                N_A => decoder_x,
-                                N_SEL => TOP_SEL,
-                                N_X => TOP_X
-                                );
-
+    DECODER_COMP: Decoder_Nx2N 
+    generic map (
+        IN_SIZE => top_IN_SIZE
+    )
+    port map (
+        A   => TOP_A,
+        X   => DECODER_X 
+    );
+    
+    MUX_COMP: Mux_Nbit_Nx1 
+    generic map (
+        IN_SIZE => top_IN_SIZE, 
+        WIDTH => top_WIDTH
+    )
+    port map (
+        N_A     => DECODER_X,
+        N_SEL   => TOP_SEL,
+        N_X     => TOP_X
+    );
 
 end Behavioral;

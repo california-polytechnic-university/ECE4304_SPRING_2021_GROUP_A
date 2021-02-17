@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Mux_Nbit_2x1 is
     generic(
-        WIDTH   :integer := 16
+        WIDTH : integer:= 16
     );
     Port (
         A   :   in std_logic_vector(WIDTH-1 downto 0);
@@ -46,6 +46,7 @@ end Mux_Nbit_2x1;
 architecture Behavioral of Mux_Nbit_2x1 is
 
 begin
+
     my_case: process(SEL, A, B)
         begin
         case SEL is 

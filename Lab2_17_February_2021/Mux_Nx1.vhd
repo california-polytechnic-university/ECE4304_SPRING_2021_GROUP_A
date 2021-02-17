@@ -48,8 +48,6 @@ end Mux_Nbit_Nx1;
 
 architecture Behavioral of Mux_Nbit_Nx1 is
 
-constant SEL_SIZE: integer := integer(ceil(log2(real(2**IN_SIZE / WIDTH))));
-signal tmp_muxnx1: std_logic_vector(WIDTH-1 downto 0);
 -- Declare 2x1 mux component
 component Mux_Nbit_2x1
     generic(
@@ -63,9 +61,12 @@ component Mux_Nbit_2x1
     );
 end component Mux_Nbit_2x1;
 
+-- SEL_SIZE as constant
+constant SEL_SIZE: integer := integer(ceil(log2(real(2**IN_SIZE / WIDTH))));
+
 -- Declare 2D std_logic array, instantiate to 'X' to catch out of bound values
 type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to 2**SEL_SIZE-1) of std_logic_vector(WIDTH-1 downto 0);
-signal INTERNAL_CARRY : LOGIC_ARRAY;
+signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => "X"));
 
 begin
 
