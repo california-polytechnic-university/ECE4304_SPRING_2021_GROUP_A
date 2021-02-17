@@ -66,7 +66,7 @@ constant SEL_SIZE: integer := integer(ceil(log2(real(2**IN_SIZE / WIDTH))));
 
 -- Declare 2D std_logic array, instantiate to 'X' to catch out of bound values
 type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to 2**SEL_SIZE-1) of std_logic_vector(WIDTH-1 downto 0);
-signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => "X"));
+signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => (others => 'X')));
 
 begin
 
