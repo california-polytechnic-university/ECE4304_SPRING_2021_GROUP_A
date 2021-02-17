@@ -33,25 +33,25 @@ use IEEE.math_real."log2";
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Mux_Nx1 is
+entity Mux_Nbit_Nx1 is
     generic(
-        IN_SIZE :integer := 5;
+        IN_SIZE :integer := 6;
         WIDTH   :integer := 16
     );
 
     Port ( 
         N_A     : in std_logic_vector(2**IN_SIZE-1 downto 0);
-        N_SEL   : in std_logic_vector(integer(ceil(log2(real(2**(IN_SIZE-4)))))-1 downto 0);
+        N_SEL   : in std_logic_vector(integer(ceil(log2(real(2**IN_SIZE / WIDTH))))-1 downto 0);
         N_X     : out std_logic_vector(WIDTH-1 downto 0)
     );
-end Mux_Nx1;
+end Mux_Nbit_Nx1;
 
-architecture Behavioral of Mux_Nx1 is
+architecture Behavioral of Mux_Nbit_Nx1 is
 
-constant SEL_SIZE: integer := integer(ceil(log2(real(2**(IN_SIZE-4)))));
+constant SEL_SIZE: integer := integer(ceil(log2(real(2**IN_SIZE / WIDTH))));
 signal tmp_muxnx1: std_logic_vector(WIDTH-1 downto 0);
 -- Declare 2x1 mux component
-component Mux_2x1
+component Mux_Nbit_2x1
     generic(
         WIDTH   :integer := 16
     );
@@ -61,11 +61,11 @@ component Mux_2x1
         SEL :   in std_logic;
         X   :   out std_logic_vector(WIDTH-1 downto 0)
     );
-end component;
+end component Mux_Nbit_2x1;
 
 -- Declare 2D std_logic array, instantiate to 'X' to catch out of bound values
 type LOGIC_ARRAY is array (0 to SEL_SIZE, 0 to 2**SEL_SIZE-1) of std_logic_vector(WIDTH-1 downto 0);
-signal INTERNAL_CARRY : LOGIC_ARRAY := (others => (others => "XXXXXXXXXXXXXXXX"));
+signal INTERNAL_CARRY : LOGIC_ARRAY;
 
 begin
 
@@ -81,7 +81,11 @@ begin
         -- Inner for-generate loop. Runs loop for amount of muxes per stage (Calculated by 2^(SEL_SIZE-1-STAGE))
         MUXES: for j in 0 to (2**(SEL_SIZE-1-i))-1 generate
             -- Generate mux, take input from 2D array and output to it.
-            MUX_INTERMEDIATE: Mux_2x1 port map(
+            MUX_INTERMEDIATE: Mux_Nbit_2x1 
+            generic map(
+                WIDTH => WIDTH
+            )
+            port map(
                 A   =>  INTERNAL_CARRY(i, (2 * j)),
                 B   =>  INTERNAL_CARRY(i, (2 * j + 1)),
                 SEL =>  N_SEL(i),

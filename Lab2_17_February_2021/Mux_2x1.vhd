@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Mux_2x1 is
+entity Mux_Nbit_2x1 is
     generic(
         WIDTH   :integer := 16
     );
@@ -41,12 +41,12 @@ entity Mux_2x1 is
         SEL :   in std_logic;
         X   :   out std_logic_vector(WIDTH-1 downto 0)
     );
-end Mux_2x1;
+end Mux_Nbit_2x1;
 
-architecture Behavioral of Mux_2x1 is
+architecture Behavioral of Mux_Nbit_2x1 is
 
 begin
-    my_case: process(SEL)
+    my_case: process(SEL, A, B)
         begin
         case SEL is 
             when '0' => X <= A;
