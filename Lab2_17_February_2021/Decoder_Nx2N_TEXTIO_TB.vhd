@@ -30,13 +30,13 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Decoder_Nx2N_tb is
+entity Decoder_Nx2N_TEXTIO_tb is
     generic(
         IN_SIZE_TB : integer:=5
     );
-end Decoder_Nx2N_tb;
+end Decoder_Nx2N_TEXTIO_tb;
 
-architecture Behavioral of Decoder_Nx2N_tb is
+architecture Behavioral of Decoder_Nx2N_TEXTIO_tb is
 
 component Decoder_Nx2N
     generic(
