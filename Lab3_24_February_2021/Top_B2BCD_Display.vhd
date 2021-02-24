@@ -37,6 +37,7 @@ entity Top_B2BCD_Display is
     Port ( 
         -- Input Ports --
         CLK : in std_logic; 
+        RST : in std_logic;
         IN1 : in std_logic_vector( 3 downto 0 );
         IN2 : in std_logic_vector( 3 downto 0 );
         
@@ -96,7 +97,11 @@ begin
     DISP_COUNTER: process (clk) 
     begin 
         if(rising_edge(clk)) then
-            count <= std_logic_vector(unsigned(count) + 1);
+            if(RST = '1') then
+                count <= (others => '0');
+            else
+                count <= std_logic_vector(unsigned(count) + 1);    
+            end if;
         end if; 
     end process DISP_COUNTER;
     
