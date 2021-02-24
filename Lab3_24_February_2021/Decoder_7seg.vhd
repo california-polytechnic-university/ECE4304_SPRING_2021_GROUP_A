@@ -31,14 +31,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Display_3x8 is
+entity Decoder_7seg is
     Port ( 
         A : in std_logic_vector(3 downto 0);
         X : out std_logic_vector(6 downto 0)
     );
-end Display_3x8;
+end Decoder_7seg;
 
-architecture Behavioral of Display_3x8 is
+architecture Behavioral of Decoder_7seg is
 
 begin
 

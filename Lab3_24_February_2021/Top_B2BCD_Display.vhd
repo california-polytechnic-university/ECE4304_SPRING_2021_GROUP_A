@@ -56,12 +56,12 @@ component B2BCD
     );
 end component B2BCD;
 
-component Display_3x8
+component Decoder_7seg
     Port ( 
         A : in std_logic_vector(3 downto 0);
         X : out std_logic_vector(6 downto 0)
     );
-end component Display_3x8;
+end component Decoder_7seg;
 
 -- Counter signal
 signal count    : std_logic_vector(19 downto 0) := (others => '0');
@@ -86,7 +86,7 @@ begin
         X => B2BCD_X2
     );
     
-    DISPLAY_INST: Display_3x8
+    DISPLAY_INST: Decoder_7seg
     port map(
         A => DISPLAY_IN,
         X => CACG
