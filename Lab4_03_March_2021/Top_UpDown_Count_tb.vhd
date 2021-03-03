@@ -68,7 +68,7 @@ signal DISP_RST_TB : std_logic;
 signal COUNT_SPD_TOP_TB : std_logic_vector(2 downto 0);
 
 constant clock_period : time:=10ns;
-constant wait_period : time := 400ms;
+constant wait_period : time := 350ms; -- Time it takes (speed '111') to get to counter value 11
 
 begin
 
