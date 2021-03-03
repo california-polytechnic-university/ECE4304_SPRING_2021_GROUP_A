@@ -7,4 +7,4 @@ Using the 7-segment display on the FPGA, a value will be displayed. This value w
 A separate reset for the value and the displays are set up.
 
 ## Video Demonstration Link
-*To be added*
+https://youtu.be/kZ7w_eSx39E
