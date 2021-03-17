@@ -1,48 +1,30 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/16/2021 04:51:09 PM
--- Design Name: 
--- Module Name: Division_TB - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 
-entity Division_TB is
+entity DIV_tb is
     generic(
         WIDTH_TB : integer:=4
     );
-end Division_TB;
+end DIV_tb;
 
-architecture Behavioral of Division_TB is
+architecture Behavioral of DIV_tb is
 
 component DIV is
     generic(
-        WIDTH : integer := 4
+        WIDTH_DIV : integer := 4    -- Input width
     );
     Port ( 
-        CLK : in std_logic;
-        RST : in std_logic;
-        IN_A : in std_logic_vector(WIDTH-1 downto 0);
-        IN_B : in std_logic_vector(WIDTH-1 downto 0);
-        Z : out std_logic_vector(WIDTH-1 downto 0);
-        RDY: out std_logic
+        -- Inputs --
+        CLK_DIV : in std_logic;
+        RST_DIV : in std_logic;
+        A_DIV   : in std_logic_vector(WIDTH_DIV-1 downto 0);
+        B_DIV   : in std_logic_vector(WIDTH_DIV-1 downto 0);
+        -- Outputs --
+        Z_DIV   : out std_logic_vector(WIDTH_DIV-1 downto 0);
+        RDY_DIV : out std_logic;    -- Flag when division is finished
+        ERR_DIV : out std_logic    -- Flag when divide by 0 occurs
     );
 end component DIV;
 
@@ -52,22 +34,24 @@ signal IN_A_TB : std_logic_vector(WIDTH_TB-1 downto 0);
 signal IN_B_TB : std_logic_vector(WIDTH_TB-1 downto 0);
 signal Z_TB : std_logic_vector(WIDTH_TB-1 downto 0);
 signal RDY_TB : std_logic;
+signal ERR_TB : std_logic;
 
 constant clock_period : time:=10ns;
 
 begin
 
-UUT: Division 
+UUT: DIV 
 generic map(
-    WIDTH => WIDTH_TB
+    WIDTH_DIV => WIDTH_TB
 )
 port map(
-    CLK => CLK_TB,
-    RST => RST_TB,
-    IN_A => IN_A_TB,
-    IN_B => IN_B_TB,
-    Z => Z_TB,
-    RDY => RDY_TB
+    CLK_DIV => CLK_TB,
+    RST_DIV => RST_TB,
+    A_DIV   => IN_A_TB,
+    B_DIV   => IN_B_TB,
+    Z_DIV   => Z_TB,
+    RDY_DIV => RDY_TB,
+    ERR_DIV => ERR_TB
 );
 
 CLK_GEN : process begin
