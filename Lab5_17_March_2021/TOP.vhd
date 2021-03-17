@@ -33,6 +33,7 @@ signal DISP_A, DISP_B, DISP_CH, DISP_CL: std_logic_vector(WIDTH_TOP-1 downto 0) 
 
 signal SEL_4X1: std_logic_vector(1 downto 0) := (others =>'0'); -- Select for 4x1 mux which comes from the CLK divider
 signal OUT_4X1: std_logic_vector(WIDTH_TOP-1 downto 0) := (others =>'0'); -- Output from 4x1 mux which is converted to CAG and read by 7segs
+signal OUT_BCD: std_logic_vector(WIDTH_TOP*2-1 downto 0);
 signal OUT_ALU: std_logic_vector(WIDTH_TOP*2-1 downto 0);
 
 -- COMPONENTS-------------------------------------------------------
@@ -142,6 +143,18 @@ DISPLAY_MUX: MUX4X1
         MUX_OUT => OUT_4X1   
     );
 
+BINARY2BCD: B2BCD
+    generic map(
+        N => WIDTH_TOP*2,
+        digits => 2
+        )
+    port map(
+        clk     => FPGA_CLK,
+        reset   => RST_TOP,
+		binary_in	=> OUT_ALU,		
+		bcd     => OUT_BCD
+    );    
+    
 GET_CAG: SS_DECODER
     port map(
         DECODER_IN  => OUT_4X1,
@@ -164,6 +177,6 @@ ALU_INST : ALU
         ERR_ALU => RESULT_ERR
     );
 
-DISP_CH <= OUT_ALU(WIDTH_TOP*2-1 downto WIDTH_TOP);
-DISP_CL <= OUT_ALU(WIDTH_TOP-1 downto 0);
+DISP_CH <= OUT_BCD(WIDTH_TOP*2-1 downto WIDTH_TOP);
+DISP_CL <= OUT_BCD(WIDTH_TOP-1 downto 0);
 end Behavioral;
