@@ -190,9 +190,6 @@ ALU_INST : ALU
         RES_RDY => RESULT_RDY
     );
 
---DISP_CH <= OUT_ALU(WIDTH_TOP*2-1 downto WIDTH_TOP);
---DISP_CL <= OUT_ALU(WIDTH_TOP-1 downto 0);
-
 DISP_CH <= OUT_BCD(WIDTH_TOP*2-1 downto WIDTH_TOP);
 DISP_CL <= OUT_BCD(WIDTH_TOP-1 downto 0);
 
