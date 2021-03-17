@@ -66,12 +66,6 @@ component MUX4X1
         MUX_OUT : out std_logic_vector(3 downto 0)
     );
 end component;
-component SS_DECODER
-    Port ( 
-        DECODER_IN  : in std_logic_vector(3 downto 0);
-        DECODER_OUT : out std_logic_vector(6 downto 0)   
-    );
-end component;
 
 component B2BCD IS
 	GENERIC(
