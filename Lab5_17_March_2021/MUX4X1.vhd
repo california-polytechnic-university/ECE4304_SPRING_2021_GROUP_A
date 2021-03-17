@@ -45,7 +45,7 @@ end MUX4X1;
 architecture Behavioral of MUX4X1 is
 signal MUX_OUT_SIGNAL: std_logic_vector(3 downto 0) := (others => '0');
 begin
-process(MUX_S)
+process(MUX_S, MUX_B, MUX_A, MUX_CL, MUX_CH)
 begin
     case MUX_S is
         when "00" => MUX_OUT_SIGNAL <= MUX_B;
