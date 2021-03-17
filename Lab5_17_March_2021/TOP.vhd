@@ -73,6 +73,23 @@ component SS_DECODER
     );
 end component;
 
+component B2BCD IS
+	GENERIC(
+		N	:	INTEGER := 8;		
+		digits	:	INTEGER := 2);		
+	PORT(
+	    clk, reset: in std_logic;
+		binary_in   	:	in std_logic_vector(N-1 downto 0);			
+		bcd		:	out std_logic_vector(digits*4-1 downto 0));	
+end component;
+
+component SS_DECODER
+    Port ( 
+        DECODER_IN  : in std_logic_vector(3 downto 0);
+        DECODER_OUT : out std_logic_vector(6 downto 0)   
+    );
+end component;	
+	
 component ALU is
     generic(
         WIDTH_ALU : integer:=4
