@@ -9,4 +9,4 @@ The FPGA implementation will implement the barrel shifter as 8-bits. The 8-bit i
 The 7-segment display will display the BCD decimal value of the input, shift amount, and value after the shift.
 
 ## Video Demonstration Link
-* To be added *
+https://youtu.be/ePOvNMuJj-g 
