@@ -54,17 +54,18 @@ component Top_7seg is
         IN_CLK : in std_logic;
         IN_RST : in std_logic;
         
-        -- IN_X is packed
-        -- IN(3 downto 0) = Input Value
-        -- IN(4): 1 = Enabled, 0 = Disabled
-        IN_0 : in std_logic_vector(4 downto 0);
-        IN_1 : in std_logic_vector(4 downto 0);
-        IN_2 : in std_logic_vector(4 downto 0);
-        IN_3 : in std_logic_vector(4 downto 0);
-        IN_4 : in std_logic_vector(4 downto 0);
-        IN_5 : in std_logic_vector(4 downto 0);
-        IN_6 : in std_logic_vector(4 downto 0);
-        IN_7 : in std_logic_vector(4 downto 0);
+        -- IN_X is 4-bit value for that digit
+        IN_0 : in std_logic_vector(3 downto 0);
+        IN_1 : in std_logic_vector(3 downto 0);
+        IN_2 : in std_logic_vector(3 downto 0);
+        IN_3 : in std_logic_vector(3 downto 0);
+        IN_4 : in std_logic_vector(3 downto 0);
+        IN_5 : in std_logic_vector(3 downto 0);
+        IN_6 : in std_logic_vector(3 downto 0);
+        IN_7 : in std_logic_vector(3 downto 0);
+        
+        -- Digit enable vector
+        IN_EN : std_logic_vector(7 downto 0);
         
         -- Decimal point control
         -- 1 = Disabled, 0 = Enabled
@@ -106,28 +107,20 @@ begin
         BCD_IN  => TOP_SHIFT,
         BCD_OUT => TOP_SHIFT_BCD
     );
-    
-    -- Pack inputs into 7-segment display with '1' to mark as enable
-    VAL_BCD1 <= '1' & TOP_VAL(3 downto 0);
-    VAL_BCD2 <= '1' & TOP_VAL(7 downto 4);
-    
-    SHIFT_BCD1 <= '1' & TOP_SHIFT_BCD;
-    
-    BSHIFT_BCD1 <= '1' & TOP_BSHIFT(3 downto 0);
-    BSHIFT_BCD2 <= '1' & TOP_BSHIFT(7 downto 4);
 
     DISP : Top_7seg
     port map(
         IN_CLK => TOP_CLK,
         IN_RST => TOP_RST,
-        IN_0 => VAL_BCD1,
-        IN_1 => VAL_BCD2,
-        IN_2 => "00000",
-        IN_3 => "00000",
-        IN_4 => BSHIFT_BCD1,
-        IN_5 => BSHIFT_BCD2,
-        IN_6 => "00000",
-        IN_7 => SHIFT_BCD1,
+        IN_0 => TOP_VAL(3 downto 0),
+        IN_1 => TOP_VAL(7 downto 4),
+        IN_2 => (others => '0'),
+        IN_3 => (others => '0'),
+        IN_4 => TOP_BSHIFT(3 downto 0),
+        IN_5 => TOP_BSHIFT(7 downto 4),
+        IN_6 => (others => '0'),
+        IN_7 => TOP_SHIFT_BCD,
+        IN_EN => "10110011"
         IN_DP => '1',
         OUT_CAG => TOP_CAG,
         OUT_AN => TOP_AN,
