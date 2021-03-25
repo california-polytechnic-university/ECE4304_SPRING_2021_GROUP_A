@@ -9,17 +9,18 @@ entity Top_7seg is
         IN_CLK : in std_logic;
         IN_RST : in std_logic;
         
-        -- IN_X is packed
-        -- IN(3 downto 0) = Input Value
-        -- IN(4): 1 = Enabled, 0 = Disabled
-        IN_0 : in std_logic_vector(4 downto 0);
-        IN_1 : in std_logic_vector(4 downto 0);
-        IN_2 : in std_logic_vector(4 downto 0);
-        IN_3 : in std_logic_vector(4 downto 0);
-        IN_4 : in std_logic_vector(4 downto 0);
-        IN_5 : in std_logic_vector(4 downto 0);
-        IN_6 : in std_logic_vector(4 downto 0);
-        IN_7 : in std_logic_vector(4 downto 0);
+        -- IN_X is 4-bit value for that digit
+        IN_0 : in std_logic_vector(3 downto 0);
+        IN_1 : in std_logic_vector(3 downto 0);
+        IN_2 : in std_logic_vector(3 downto 0);
+        IN_3 : in std_logic_vector(3 downto 0);
+        IN_4 : in std_logic_vector(3 downto 0);
+        IN_5 : in std_logic_vector(3 downto 0);
+        IN_6 : in std_logic_vector(3 downto 0);
+        IN_7 : in std_logic_vector(3 downto 0);
+        
+        -- Digit enable vector
+        IN_EN : std_logic_vector(7 downto 0);
         
         -- Decimal point control
         -- 1 = Disabled, 0 = Enabled
@@ -69,7 +70,6 @@ end component Decoder_7seg;
     constant INPUT_WIDTH    : integer := 4;
 
     signal IN_VECTOR    : std_logic_vector(TOTAL_DISPLAYS*INPUT_WIDTH-1 downto 0);
-    signal EN_VECTOR    : std_logic_vector(TOTAL_DISPLAYS-1 downto 0);
 
     signal TICK     : std_logic;
     signal MUX_SEL  : std_logic_vector(integer(ceil(log2(real(TOTAL_DISPLAYS))))-1 downto 0) := (others => '0');
@@ -77,14 +77,14 @@ end component Decoder_7seg;
 
 begin
 
-    IN_VECTOR(3 downto 0)   <= IN_0(3 downto 0); EN_VECTOR(0) <= IN_0(INPUT_WIDTH);
-    IN_VECTOR(7 downto 4)   <= IN_1(3 downto 0); EN_VECTOR(1) <= IN_1(INPUT_WIDTH);
-    IN_VECTOR(11 downto 8)  <= IN_2(3 downto 0); EN_VECTOR(2) <= IN_2(INPUT_WIDTH);
-    IN_VECTOR(15 downto 12) <= IN_3(3 downto 0); EN_VECTOR(3) <= IN_3(INPUT_WIDTH);
-    IN_VECTOR(19 downto 16) <= IN_4(3 downto 0); EN_VECTOR(4) <= IN_4(INPUT_WIDTH);
-    IN_VECTOR(23 downto 20) <= IN_5(3 downto 0); EN_VECTOR(5) <= IN_5(INPUT_WIDTH);
-    IN_VECTOR(27 downto 24) <= IN_6(3 downto 0); EN_VECTOR(6) <= IN_6(INPUT_WIDTH);
-    IN_VECTOR(31 downto 28) <= IN_7(3 downto 0); EN_VECTOR(7) <= IN_7(INPUT_WIDTH);
+    IN_VECTOR(3 downto 0)   <= IN_0;
+    IN_VECTOR(7 downto 4)   <= IN_1;
+    IN_VECTOR(11 downto 8)  <= IN_2;
+    IN_VECTOR(15 downto 12) <= IN_3;
+    IN_VECTOR(19 downto 16) <= IN_4;
+    IN_VECTOR(23 downto 20) <= IN_5;
+    IN_VECTOR(27 downto 24) <= IN_6;
+    IN_VECTOR(31 downto 28) <= IN_7;
     
 ---- 7-Segment Slow Clock / Mux Selector ----
 
@@ -129,10 +129,10 @@ begin
         X   => OUT_CAG
     );
     
-    DISP_ENABLE : process (MUX_SEL, EN_VECTOR) begin
+    DISP_ENABLE : process (MUX_SEL, IN_EN) begin
         
         OUT_AN <= (others => '1');
-        if( EN_VECTOR(to_integer(unsigned(MUX_SEL))) = '1' ) then
+        if( IN_EN(to_integer(unsigned(MUX_SEL))) = '1' ) then
             OUT_AN(to_integer(unsigned(MUX_SEL))) <= '0';        
         end if;
     end process DISP_ENABLE;
