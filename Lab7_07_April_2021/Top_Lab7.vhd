@@ -13,11 +13,9 @@ entity Top_Lab7 is
         -- User inputs
         TOP_SHIFT_A : in std_logic_vector(2 downto 0);  -- A shift value
         TOP_SHIFT_B : in std_logic_vector(2 downto 0);  -- B shift value 
-        TOP_PULL_A  : in std_logic;  -- Pull A from FIFO
-        TOP_PULL_B  : in std_logic;  -- Pull B from FIFO
+        TOP_PULL    : in std_logic;  -- Pull from FIFO
         TOP_ALU_SEL : in std_logic_vector(1 downto 0);  -- ALU operation select
-        
-        TOP_IN : in std_logic_vector(3 downto 0);
+        TOP_FIFO_SEL: in std_logic;
         
         -- FIFO status output
         TOP_FIFO_A_FULL : out std_logic;
@@ -48,6 +46,15 @@ component UART_RX is
         DATAVALID   : out std_logic
     );
 end component UART_RX;
+
+component BTN_Debouncer is
+    Port ( 
+        CLK     : in std_logic;
+        RST     : in std_logic;
+        BTN_IN  : in std_logic;
+        BTN_OUT : out std_logic
+    );
+end component BTN_Debouncer;
 
 component STD_FIFO is
 	generic (
@@ -87,7 +94,11 @@ component ALU is
         RST_ALU : in std_logic;
         A_ALU   : in std_logic_vector(WIDTH_ALU-1 downto 0);
         B_ALU   : in std_logic_vector(WIDTH_ALU-1 downto 0);
-        SEL_ALU : in std_logic_vector(1 downto 0);
+        SEL_ALU : in std_logic_vector(1 downto 0);  
+        -- 0 is addition
+        -- 1 is subtraction
+        -- 2 is multiply
+        -- 3 is divide
         
         RES_ALU : out std_logic_vector(WIDTH_ALU*2-1 downto 0);
         NEG_ALU : out std_logic;
@@ -127,7 +138,11 @@ end component Top_7seg;
 signal RX_DATA : std_logic_vector(7 downto 0);  -- RX byte from RX module
 signal RX_DONE : std_logic;                     -- Flag when data is valid
 
+signal DEBOUNCE_PULL    : std_logic;
+signal PULL             : std_logic;
+
 signal RX_FIFO_A_WR, RX_FIFO_B_WR       : std_logic;
+signal RX_FIFO_A_RD, RX_FIFO_B_RD       : std_logic;
 signal RX_FIFO_A_FULL, RX_FIFO_B_FULL   : std_logic;
 signal RX_FIFO_A_EMPTY, RX_FIFO_B_EMPTY : std_logic;
 signal RX_FIFO_A_DATA, RX_FIFO_B_DATA   : std_logic_vector(7 downto 0);
@@ -148,42 +163,70 @@ begin
         DATAOUT     => RX_DATA,
         DATAVALID   => RX_DONE
     );
-   
-    -- Select for which FIFO RX component writes to.
-    -- If FIFO A is full, write to FIFO B.
-    RX_FIFO_A_WR    <= not RX_FIFO_A_FULL and RX_DONE;
-    RX_FIFO_B_WR    <= RX_FIFO_A_FULL and RX_DONE;
-      
-    
-    FIFO_A : STD_FIFO
-	generic map (
-		DATA_WIDTH =>   8,    -- 8 bits due to RX Byte
-		FIFO_DEPTH =>   4     -- 4 rows described in lab description
+  
+    BTN_DEBOUNCE : BTN_Debouncer
+    port map ( 
+        CLK     => TOP_CLK,
+        RST     => TOP_RST,
+        BTN_IN  => TOP_PULL,
+        BTN_OUT => DEBOUNCE_PULL
+    );
+
+    BTN_RISE : process ( TOP_CLK, TOP_RST, DEBOUNCE_PULL ) 
+        variable isOn : boolean;
+    begin
+        if( TOP_RST = '1' ) then
+            isOn := false; 
+        elsif( rising_edge(TOP_CLK) ) then
+            PULL <= '0';
+            if( not isOn ) then
+                if( DEBOUNCE_PULL = '1' ) then
+                    PULL <= '1';
+                    isOn := true;
+                end if;
+            else
+                if( DEBOUNCE_PULL = '0' ) then
+                    isOn := false;
+                end if;
+            end if;
+        end if;
+    end process BTN_RISE;   
+
+    -- Select for which FIFO RX component reads/writes to.
+    -- TOP_FIFO_SEL = 0 : FIFO A
+    -- TOP_FIFO_SEL = 1 : FIFO B
+    RX_FIFO_A_WR    <= not TOP_FIFO_SEL and RX_DONE;
+    RX_FIFO_B_WR    <= TOP_FIFO_SEL and RX_DONE;
+    RX_FIFO_A_RD    <= not TOP_FIFO_SEL and PULL; 
+    RX_FIFO_B_RD    <= TOP_FIFO_SEL and PULL;
+
+	FIFO_A : STD_FIFO
+	generic map(
+		DATA_WIDTH => 8,
+		FIFO_DEPTH => 4
 	)
-	port map ( 
+	port map( 
 		CLK		=> TOP_CLK,
 		RST		=> TOP_RST,
 		WriteEn	=> RX_FIFO_A_WR,
 		DataIn	=> RX_DATA,
-		ReadEn	=> TOP_PULL_A,
+		ReadEn	=> RX_FIFO_A_RD,
 		DataOut	=> RX_FIFO_A_DATA,
 		Empty	=> TOP_FIFO_A_EMPTY,
-		Full	=> RX_FIFO_A_FULL
+		Full	=> TOP_FIFO_A_FULL
 	);
-	
-	TOP_FIFO_A_FULL <= RX_FIFO_A_FULL;
-	
+
 	FIFO_B : STD_FIFO
-	generic map (
-		DATA_WIDTH =>   8,    -- 8 bits due to RX Byte
-		FIFO_DEPTH =>   4     -- 4 rows described in lab description
+	generic map(
+		DATA_WIDTH => 8,
+		FIFO_DEPTH => 4
 	)
-	port map ( 
+	port map( 
 		CLK		=> TOP_CLK,
 		RST		=> TOP_RST,
 		WriteEn	=> RX_FIFO_B_WR,
 		DataIn	=> RX_DATA,
-		ReadEn	=> TOP_PULL_B,
+		ReadEn	=> RX_FIFO_B_RD,
 		DataOut	=> RX_FIFO_B_DATA,
 		Empty	=> TOP_FIFO_B_EMPTY,
 		Full	=> TOP_FIFO_B_FULL

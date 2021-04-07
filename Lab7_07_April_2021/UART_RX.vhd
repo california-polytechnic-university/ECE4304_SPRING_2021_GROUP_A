@@ -36,20 +36,6 @@ signal count_time:std_logic_vector(31 downto 0);
 
 begin
 
-    GEN: process(CLK, RST) begin 
-        if (RST = '1') then 
-            count_time <= (others =>'0');
-            clk_bounce <= '0';
-        elsif(rising_edge(clk)) then 
-            if (count_time = 5000) then 
-                clk_bounce <= not clk_bounce;
-                count_time <= (others =>'0');
-            else 
-                count_time <= count_time + 1;
-            end if; 
-        end if; 
-     end process; 
-
     D_flip_flop_1: process( CLK ) begin -- Clock crossing, first flip flop 
         if CLK = '1' and CLK'event then
             RxD_temp <= RX_IN;

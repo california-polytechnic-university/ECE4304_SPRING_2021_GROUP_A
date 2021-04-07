@@ -3,9 +3,9 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
 entity STD_FIFO is
-	generic (
-		DATA_WIDTH : integer :=   8;
-		FIFO_DEPTH : integer := 256
+	Generic (
+		constant DATA_WIDTH  : positive := 8;
+		constant FIFO_DEPTH	: positive := 256
 	);
 	Port ( 
 		CLK		: in  STD_LOGIC;
@@ -26,7 +26,7 @@ begin
 	-- Memory Pointer Process
 	fifo_proc : process (CLK)
 		type FIFO_Memory is array (0 to FIFO_DEPTH - 1) of STD_LOGIC_VECTOR (DATA_WIDTH - 1 downto 0);
-		variable Memory : FIFO_Memory := (others => (others => '0'));
+		variable Memory : FIFO_Memory;
 		
 		variable Head : natural range 0 to FIFO_DEPTH - 1;
 		variable Tail : natural range 0 to FIFO_DEPTH - 1;
@@ -90,10 +90,6 @@ begin
 				end if;
 			end if;
 		end if;
-		
-		DataOut <= Memory(Tail);
-		
 	end process;
-	
-	
+		
 end Behavioral;
