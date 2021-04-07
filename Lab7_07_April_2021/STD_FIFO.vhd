@@ -39,7 +39,7 @@ begin
 				Tail := 0;
 				
 				Looped := false;
-				
+				DataOut <= (others => '0');
 				Full  <= '0';
 				Empty <= '1';
 			else
