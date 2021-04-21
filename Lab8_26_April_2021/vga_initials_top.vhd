@@ -116,8 +116,7 @@ component vga_initials
            rom_addr4: out STD_LOGIC_VECTOR (3  downto 0);
            red      : out STD_LOGIC_VECTOR (3  downto 0); 
            green    : out STD_LOGIC_VECTOR (3  downto 0); 
-           blue     : out STD_LOGIC_VECTOR (3  downto 0);
-           testled  : out STD_LOGIC_VECTOR(2 downto 0)
+           blue     : out STD_LOGIC_VECTOR (3  downto 0)
          );
 end component;
 
@@ -220,8 +219,7 @@ INIT: vga_initials
                    rom_addr4 => rom_addr4,
                    red       =>  red,
                    green     =>  green,
-                   blue      =>  blue,
-                   testled => testled
+                   blue      =>  blue
          );
          
 PROM: PROM_IMG generic map (

@@ -51,8 +51,7 @@ entity vga_initials is
            rom_addr4: out STD_LOGIC_VECTOR (3  downto 0);
            red      : out STD_LOGIC_VECTOR (3  downto 0); 
            green    : out STD_LOGIC_VECTOR (3  downto 0); 
-           blue     : out STD_LOGIC_VECTOR (3  downto 0);
-           testled  : out STD_LOGIC_VECTOR(2 downto 0)
+           blue     : out STD_LOGIC_VECTOR (3  downto 0)
          );
 end vga_initials;
 
@@ -93,7 +92,6 @@ OUTP_COLOR:process(clk,rst)
                 red   <= (others =>'0');
                 green <= (others =>'0');
                 blue  <= (others =>'0'); 
-                testled <= (others => '0');
             elsif(rising_edge(clk)) then 
                 if (spriteon = '1' and vidon = '1') then 
                 
@@ -116,8 +114,6 @@ OUTP_COLOR:process(clk,rst)
                     else
                         blue <= (others =>'0');
                     end if;                   
-                    
-                    testled <= R & G & B;
                 end if; 
                 
             end if; 
