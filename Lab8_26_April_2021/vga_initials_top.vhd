@@ -45,7 +45,6 @@ entity vga_initials_top is
          );
     Port ( clk  : in STD_LOGIC;
            rst  : in STD_LOGIC;
-           --sw   : in STD_LOGIC_VECTOR (7 downto 0);
            redC: in STD_LOGIC_VECTOR(3 downto 0);
            blueC: in STD_LOGIC_VECTOR(3 downto 0);
            greenC: in STD_LOGIC_VECTOR(3 downto 0);
@@ -54,8 +53,7 @@ entity vga_initials_top is
            rx   : in std_logic;
            red  : out STD_LOGIC_VECTOR (3 downto 0); 
            green: out STD_LOGIC_VECTOR (3 downto 0);
-           blue : out STD_LOGIC_VECTOR (3 downto 0);
-           testled: out std_logic_vector(2 downto 0)  
+           blue : out STD_LOGIC_VECTOR (3 downto 0)
          );
 end vga_initials_top;
 
