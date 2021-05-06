@@ -9,8 +9,10 @@ entity Permutation_Loop is
         CLK : in std_logic;
         RST : in std_logic;
         GO  : in std_logic;
+        RDY : in std_logic;
         DATA_IN : in std_logic_vector(1599 downto 0); 
-        DATA_OUT : out std_logic_vector(1599 downto 0)
+        DATA_OUT : out std_logic_vector(1599 downto 0);
+        FINISH : out std_logic
     );
 end Permutation_Loop;
 
@@ -78,7 +80,7 @@ begin
     end process STATE;
     
     -- Next-state logic and output logic
-    COMB : process ( CLK, RST, STATE_REG, GO, CURRENT_VAL, LOOP_NEXT, LOOP_REG, OUT_VAL ) begin
+    COMB : process ( CLK, RST, STATE_REG, GO, RDY, CURRENT_VAL, LOOP_REG, OUT_VAL, DATA_IN ) begin
         STATE_NEXT <= STATE_REG;
         NEXT_VAL <= CURRENT_VAL;
         LOOP_NEXT <= LOOP_REG;
@@ -87,6 +89,7 @@ begin
             when waiting => 
                 if( GO = '1' ) then
                     LOOP_NEXT <= 0; 
+                    NEXT_VAL <= DATA_IN;
                     STATE_NEXT <= looping;
                 else
                     STATE_NEXT <= waiting;
@@ -101,9 +104,15 @@ begin
                     STATE_NEXT <= looping;
                 end if;
             when done =>
-                STATE_NEXT <= waiting;
+                if( RDY = '1' ) then
+                    STATE_NEXT <= waiting;
+                else
+                    STATE_NEXT <= done;
+                end if;
         end case;
     end process COMB;
+    
+    FINISH <= '1' when (STATE_REG = done) else '0';
     
 end Behavioral;
 
