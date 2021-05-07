@@ -16,7 +16,11 @@ entity SHA_3_v1_0_S00_AXI is
 	);
 	port (
 		-- Users to add ports here
-
+        I_HSYNC: out std_logic;
+        I_VSYNC: out std_logic; 
+        I_RED  : out std_logic_vector (2 downto 0); 
+        I_GREEN: out std_logic_vector (2 downto 0);
+        I_BLUE : out std_logic_vector (2 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -218,18 +222,26 @@ architecture arch_imp of SHA_3_v1_0_S00_AXI is
 
 
     -- User signals
-    
-    component Permutation_Loop is
+    component SHA3_System_Top is
     Port ( 
-        CLK : in std_logic;
-        RST : in std_logic;
-        GO  : in std_logic;
-        RDY : in std_logic;
-        DATA_IN : in std_logic_vector(1599 downto 0); 
-        DATA_OUT : out std_logic_vector(1599 downto 0);
-        FINISH : out std_logic
+        TOP_CLK : in std_logic;
+        TOP_RST : in std_logic;
+        
+        -- VGA component ports
+        TOP_HSYNC: out STD_LOGIC;
+        TOP_VSYNC: out STD_LOGIC; 
+        TOP_RED  : out STD_LOGIC_VECTOR (2 downto 0); 
+        TOP_GREEN: out STD_LOGIC_VECTOR (2 downto 0);
+        TOP_BLUE : out STD_LOGIC_VECTOR (2 downto 0);   
+        
+        -- SHA-3 component ports
+        TOP_GO  : in std_logic;
+        TOP_RDY : in std_logic;
+        TOP_DATA_IN : in std_logic_vector(1599 downto 0); 
+        TOP_DATA_OUT : out std_logic_vector(1599 downto 0);
+        TOP_FINISH : out std_logic
     );
-    end component Permutation_Loop;  
+    end component SHA3_System_Top; 
     
     signal SHA3_INPUT : std_logic_vector(1599 downto 0);
     signal CONTROL_IN : std_logic_vector(31 downto 0);
@@ -1692,16 +1704,21 @@ begin
 	
 	CONTROL_IN <= slv_reg100;
 	RST_P <= not S_AXI_ARESETN;
-	
-    SHA3 : Permutation_Loop
-        port map (
-        CLK => S_AXI_ACLK,
-        RST => RST_P,
-        GO => CONTROL_IN(0),
-        RDY => CONTROL_IN(1),
-        DATA_IN => SHA3_INPUT,
-        DATA_OUT => SHA3_OUTPUT,
-        FINISH => CONTROL_OUT(0)
+
+    SHA3_Top : SHA3_System_Top
+        port map ( 
+        TOP_CLK     => S_AXI_ACLK,
+        TOP_RST     => RST_P,
+        TOP_HSYNC   => I_HSYNC,
+        TOP_VSYNC   => I_VSYNC,
+        TOP_RED     => I_RED,
+        TOP_GREEN   => I_GREEN,
+        TOP_BLUE    => I_BLUE,
+        TOP_GO      => CONTROL_IN(0),
+        TOP_RDY     => CONTROL_IN(1),
+        TOP_DATA_IN => SHA3_INPUT,
+        TOP_DATA_OUT=> SHA3_OUTPUT,
+        TOP_FINISH  => CONTROL_OUT(0)
     );
 
 	-- User logic ends

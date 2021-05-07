@@ -16,7 +16,11 @@ entity SHA_3_v1_0 is
 	);
 	port (
 		-- Users to add ports here
-
+        HSYNC: out std_logic;
+        VSYNC: out std_logic; 
+        RED  : out std_logic_vector (2 downto 0); 
+        GREEN: out std_logic_vector (2 downto 0);
+        BLUE : out std_logic_vector (2 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -55,6 +59,11 @@ architecture arch_imp of SHA_3_v1_0 is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 9
 		);
 		port (
+		I_HSYNC: out std_logic;
+        I_VSYNC: out std_logic; 
+        I_RED  : out std_logic_vector (2 downto 0); 
+        I_GREEN: out std_logic_vector (2 downto 0);
+        I_BLUE : out std_logic_vector (2 downto 0);
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -88,6 +97,11 @@ SHA_3_v1_0_S00_AXI_inst : SHA_3_v1_0_S00_AXI
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
+	    I_HSYNC    => HSYNC,
+        I_VSYNC    => VSYNC,
+        I_RED      => RED,
+        I_GREEN    => GREEN,
+        I_BLUE     => BLUE,
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> s00_axi_aresetn,
 		S_AXI_AWADDR	=> s00_axi_awaddr,
