@@ -44,7 +44,7 @@ end component Permutation_Lanes;
 	signal STATE_REG, STATE_NEXT : state_type := waiting;	-- Default state
 
     signal loop_reg, loop_next : integer := 0; 
-    signal CURRENT_VAL, OUT_VAL, NEXT_VAL : std_logic_vector(1599 downto 0);  
+    signal CURRENT_VAL, OUT_VAL, NEXT_VAL, OUTPUT_VAL, FINAL_VAL : std_logic_vector(1599 downto 0);  
     signal IOTA_CONST_VECTOR : std_logic_vector(63 downto 0);
 
 begin 
@@ -69,21 +69,22 @@ begin
                 CURRENT_VAL <= DATA_IN; 
                 loop_reg <= 0;  
                 STATE_REG <= waiting;
-                DATA_OUT <= CURRENT_VAL; 
+                OUTPUT_VAL <= (others => '0'); 
             else
                 CURRENT_VAL <= NEXT_VAL; 
                 loop_reg <= loop_next;
                 STATE_REG <= STATE_NEXT;
-                DATA_OUT <= CURRENT_VAL;
+                OUTPUT_VAL <= FINAL_VAL;
             end if;
         end if; 
     end process STATE;
     
     -- Next-state logic and output logic
-    COMB : process ( CLK, RST, STATE_REG, GO, RDY, CURRENT_VAL, LOOP_REG, OUT_VAL, DATA_IN ) begin
+    COMB : process ( CLK, RST, STATE_REG, GO, RDY, CURRENT_VAL, LOOP_REG, OUT_VAL, DATA_IN, OUTPUT_VAL ) begin
         STATE_NEXT <= STATE_REG;
         NEXT_VAL <= CURRENT_VAL;
         LOOP_NEXT <= LOOP_REG;
+        FINAL_VAL <= OUTPUT_VAL;
         
         case STATE_REG is
             when waiting => 
@@ -98,6 +99,7 @@ begin
                 if(loop_reg = 24) then  -- Keep looping until 24 permutations are done, finish. 
                     LOOP_NEXT <= 0;
                     STATE_NEXT <= done;
+                    FINAL_VAL <= CURRENT_VAL;
                 else
                     LOOP_NEXT <= loop_reg + 1; 
                     NEXT_VAL <= OUT_VAL; 
@@ -113,6 +115,7 @@ begin
     end process COMB;
     
     FINISH <= '1' when (STATE_REG = done) else '0';
+    DATA_OUT <= OUTPUT_VAL;
     
 end Behavioral;
 
