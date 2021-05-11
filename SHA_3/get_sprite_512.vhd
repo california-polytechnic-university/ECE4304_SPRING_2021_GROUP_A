@@ -308,7 +308,7 @@ end generate GET_CHAR;
 ROWS: for k in 0 to 1 generate
     GET_HEX : for i in 0 to 63 generate
         INSERT_SPRITE : for j in 0 to 7 generate 
-            mem(12+j+(-1*(23*(k-1))))(i*7+8 downto i*7+1) <= sprites(conv_integer(HASH_512(((64*k)+(i+1))*4-1 downto((64*k)+i)*4 )) * 8 + j)(7 downto 0);     
+            mem(12+j+(-1*(11*(k-1))))(i*7+8 downto i*7+1) <= sprites(conv_integer(HASH_512(((64*k)+(i+1))*4-1 downto((64*k)+i)*4 )) * 8 + j)(7 downto 0);     
         end generate INSERT_SPRITE;
     end generate GET_HEX;
 end generate ROWS;
