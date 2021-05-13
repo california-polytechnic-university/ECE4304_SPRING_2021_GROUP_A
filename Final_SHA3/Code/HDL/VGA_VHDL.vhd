@@ -62,7 +62,7 @@ entity VGA_VHDL is
             vfp     :positive:= 511    -- Vertical front porch = 511 (V_SP+V_BP+ V_Video)
            );
     Port ( clk   : in  STD_LOGIC;
-            clk25: in std_logic;
+           clk25    : in std_logic;
            clr   : in  STD_LOGIC;
            hsync : out STD_LOGIC;
            vsync : out STD_LOGIC;
@@ -88,15 +88,15 @@ CHSS:process(clk, clr)
             hc_reg <= (others =>'0'); 
             vsenable <= '0';
         elsif(rising_edge(clk)) then 
-            if( clk25 = '1' ) then
+           if( clk25 = '1' ) then
                if (hc_reg = hpixels -1) then 
                    hc_reg <= (others =>'0');
                    vsenable <= '1';
                else    
                    hc_reg <= hc_reg + 1;
                    vsenable <= '0';
-               end if;   
-           end if;       
+               end if;          
+            end if;
         end if; 
      end process; 
 
@@ -107,7 +107,7 @@ GHSS:process(clk,clr)
         if (clr = '1') then 
             hsync <= '0';
         elsif(rising_edge(clk)) then 
-            if (clk25 = '1') then
+            if( clk25 = '1' ) then
                 if (hc_reg <H_SP) then 
                     hsync <= '0';
                 else 
@@ -124,7 +124,7 @@ CVSS:process(clk,clr)
         if (clr = '1') then 
             vc_reg <= (others =>'0'); 
         elsif(rising_edge(clk)) then 
-            if ( clk25 = '1') then
+            if( clk25 = '1' ) then
                 if (vsenable = '1') then 
                     if (vc_reg = vlines -1) then 
                         vc_reg <= (others =>'0'); 
@@ -143,7 +143,7 @@ GSYNCV:process(clk,clr)
         if (clr = '1') then 
             vsync <= '1'; 
         elsif(rising_edge(clk)) then 
-            if ( clk25 = '1') then
+            if( clk25 = '1' ) then
                 if (vc_reg <V_SP) then
                     vsync <= '0';
                 else 

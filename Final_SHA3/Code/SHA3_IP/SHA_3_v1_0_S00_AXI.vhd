@@ -15,12 +15,18 @@ entity SHA_3_v1_0_S00_AXI is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 9
 	);
 	port (
-		-- Users to add ports here
-        I_HSYNC: out std_logic;
-        I_VSYNC: out std_logic; 
-        I_RED  : out std_logic_vector (2 downto 0); 
-        I_GREEN: out std_logic_vector (2 downto 0);
-        I_BLUE : out std_logic_vector (2 downto 0);
+		-- Users to add ports here      
+        I_SW   : in std_logic_vector(1 downto 0);
+        O_HSYNC: out std_logic;
+        O_VSYNC: out std_logic; 
+        O_RED  : out std_logic_vector (3 downto 0); 
+        O_GREEN: out std_logic_vector (3 downto 0);
+        O_BLUE : out std_logic_vector (3 downto 0);
+        
+        O_CAG : out std_logic_vector(6 downto 0);
+        O_AN  : out std_logic_vector(7 downto 0);
+        O_DP  : out std_logic;   
+     
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -228,20 +234,26 @@ architecture arch_imp of SHA_3_v1_0_S00_AXI is
         TOP_RST : in std_logic;
         
         -- VGA component ports
-        TOP_HSYNC: out STD_LOGIC;
-        TOP_VSYNC: out STD_LOGIC; 
-        TOP_RED  : out STD_LOGIC_VECTOR (2 downto 0); 
-        TOP_GREEN: out STD_LOGIC_VECTOR (2 downto 0);
-        TOP_BLUE : out STD_LOGIC_VECTOR (2 downto 0);   
+        TOP_SW   : in std_logic_vector (1 downto 0);
+        TOP_HSYNC: out std_logic;
+        TOP_VSYNC: out std_logic; 
+        TOP_RED  : out std_logic_vector (3 downto 0); 
+        TOP_GREEN: out std_logic_vector (3 downto 0);
+        TOP_BLUE : out std_logic_vector (3 downto 0);   
         
+        -- 7-seg component ports
+        TOP_CAG : out std_logic_vector(6 downto 0);
+        TOP_AN  : out std_logic_vector(7 downto 0);
+        TOP_DP  : out std_logic;      
+                
         -- SHA-3 component ports
-        TOP_GO  : in std_logic;
-        TOP_RDY : in std_logic;
+        TOP_GO      : in std_logic;
+        TOP_RDY     : in std_logic;
         TOP_DATA_IN : in std_logic_vector(1599 downto 0); 
-        TOP_DATA_OUT : out std_logic_vector(1599 downto 0);
-        TOP_FINISH : out std_logic
+        TOP_DATA_OUT: out std_logic_vector(1599 downto 0);
+        TOP_FINISH  : out std_logic
     );
-    end component SHA3_System_Top; 
+    end component SHA3_System_Top;
     
     signal SHA3_INPUT : std_logic_vector(1599 downto 0);
     signal CONTROL_IN : std_logic_vector(31 downto 0);
@@ -1709,11 +1721,15 @@ begin
         port map ( 
         TOP_CLK     => S_AXI_ACLK,
         TOP_RST     => RST_P,
-        TOP_HSYNC   => I_HSYNC,
-        TOP_VSYNC   => I_VSYNC,
-        TOP_RED     => I_RED,
-        TOP_GREEN   => I_GREEN,
-        TOP_BLUE    => I_BLUE,
+        TOP_SW      => I_SW,
+        TOP_HSYNC   => O_HSYNC,
+        TOP_VSYNC   => O_VSYNC,
+        TOP_RED     => O_RED,
+        TOP_GREEN   => O_GREEN,
+        TOP_BLUE    => O_BLUE,
+        TOP_CAG     => O_CAG,
+        TOP_AN      => O_AN,
+        TOP_DP      => O_DP,
         TOP_GO      => CONTROL_IN(0),
         TOP_RDY     => CONTROL_IN(1),
         TOP_DATA_IN => SHA3_INPUT,

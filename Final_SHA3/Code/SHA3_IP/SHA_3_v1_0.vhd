@@ -16,11 +16,16 @@ entity SHA_3_v1_0 is
 	);
 	port (
 		-- Users to add ports here
+        SW   : in std_logic_vector (1 downto 0);
         HSYNC: out std_logic;
         VSYNC: out std_logic; 
-        RED  : out std_logic_vector (2 downto 0); 
-        GREEN: out std_logic_vector (2 downto 0);
-        BLUE : out std_logic_vector (2 downto 0);
+        RED  : out std_logic_vector (3 downto 0); 
+        GREEN: out std_logic_vector (3 downto 0);
+        BLUE : out std_logic_vector (3 downto 0);
+        
+        CAG  : out std_logic_vector(6 downto 0);
+        AN   : out std_logic_vector(7 downto 0);
+        DP   : out std_logic;
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -59,11 +64,15 @@ architecture arch_imp of SHA_3_v1_0 is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 9
 		);
 		port (
-		I_HSYNC: out std_logic;
-        I_VSYNC: out std_logic; 
-        I_RED  : out std_logic_vector (2 downto 0); 
-        I_GREEN: out std_logic_vector (2 downto 0);
-        I_BLUE : out std_logic_vector (2 downto 0);
+        I_SW   : in std_logic_vector(1 downto 0);
+        O_HSYNC: out std_logic;
+        O_VSYNC: out std_logic; 
+        O_RED  : out std_logic_vector (3 downto 0); 
+        O_GREEN: out std_logic_vector (3 downto 0);
+        O_BLUE : out std_logic_vector (3 downto 0);
+        O_CAG : out std_logic_vector(6 downto 0);
+        O_AN  : out std_logic_vector(7 downto 0);
+        O_DP  : out std_logic;   
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -97,11 +106,15 @@ SHA_3_v1_0_S00_AXI_inst : SHA_3_v1_0_S00_AXI
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
-	    I_HSYNC    => HSYNC,
-        I_VSYNC    => VSYNC,
-        I_RED      => RED,
-        I_GREEN    => GREEN,
-        I_BLUE     => BLUE,
+	    I_SW       => SW,
+	    O_HSYNC    => HSYNC,
+        O_VSYNC    => VSYNC,
+        O_RED      => RED,
+        O_GREEN    => GREEN,
+        O_BLUE     => BLUE,
+        O_CAG      => CAG,
+        O_AN       => AN,
+        O_DP       => DP,
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> s00_axi_aresetn,
 		S_AXI_AWADDR	=> s00_axi_awaddr,

@@ -45,17 +45,26 @@ entity vga_initials_top is
          );
     Port ( clk  : in STD_LOGIC;
            rst  : in STD_LOGIC;
-           --sw   : in STD_LOGIC_VECTOR (7 downto 0);
-           HASH : in std_logic_vector(255 downto 0);
+           
+           SW   : in STD_LOGIC_VECTOR (1 downto 0);
+           
            hsync: out STD_LOGIC;
            vsync: out STD_LOGIC; 
-           red  : out STD_LOGIC_VECTOR (2 downto 0); 
-           green: out STD_LOGIC_VECTOR (2 downto 0);
-           blue : out STD_LOGIC_VECTOR (2 downto 0)   
+           
+           hash_224 : in std_logic_vector (223 downto 0);
+           hash_256 : in std_logic_vector (255 downto 0);
+           hash_384 : in std_logic_vector (383 downto 0);
+           hash_512 : in std_logic_vector (511 downto 0);
+           
+           red  : out STD_LOGIC_VECTOR (3 downto 0); 
+           green: out STD_LOGIC_VECTOR (3 downto 0);
+           blue : out STD_LOGIC_VECTOR (3 downto 0)   
          );
 end vga_initials_top;
 
 architecture Behavioral of vga_initials_top is
+
+
 
 component VGA_VHDL 
     -- Note these numbers are different from a resolution to another (This is for 640x480) 
@@ -77,10 +86,6 @@ component VGA_VHDL
         );
 end component;
 
-
-
-
-
 component vga_initials 
     generic (hbp:positive:=10; vbp:positive:=31; W:positive:=640; H:positive:= 16 );
     Port ( 
@@ -91,30 +96,58 @@ component vga_initials
            hc       : in  STD_LOGIC_VECTOR (9  downto 0);
            vc       : in  STD_LOGIC_VECTOR (9  downto 0);
            M        : in  STD_LOGIC_VECTOR (639 downto 0);
-           --SW       : in  STD_LOGIC_VECTOR (7  downto 0);
-           rom_addr4: out STD_LOGIC_VECTOR (3  downto 0);
-           red      : out STD_LOGIC_VECTOR (2  downto 0); 
-           green    : out STD_LOGIC_VECTOR (2  downto 0); 
-           blue     : out STD_LOGIC_VECTOR (2  downto 0)
+           rom_addr4: out STD_LOGIC_VECTOR (4  downto 0);
+           red      : out STD_LOGIC_VECTOR (3  downto 0); 
+           green    : out STD_LOGIC_VECTOR (3  downto 0); 
+           blue     : out STD_LOGIC_VECTOR (3  downto 0)
          );
 end component;
 
 
-component get_sprite
+component get_sprite_224
     Port ( 
-        ADDR: in std_logic_vector(3 downto 0);
+        ADDR: in std_logic_vector(4 downto 0);
+        HASH_224: in std_logic_vector(223 downto 0);
+        PROM: out std_logic_vector(639 downto 0)
+    );
+end component get_sprite_224;
+
+component get_sprite_256 is
+    Port ( 
+        ADDR: in std_logic_vector(4 downto 0);
         HASH_256: in std_logic_vector(255 downto 0);
         PROM: out std_logic_vector(639 downto 0)
     );
-end component;
+end component get_sprite_256;
+
+component get_sprite_384 is
+    Port ( 
+        ADDR: in std_logic_vector(4 downto 0);
+        HASH_384: in std_logic_vector(383 downto 0);
+        PROM: out std_logic_vector(639 downto 0)
+    );
+end component get_sprite_384;
+
+component get_sprite_512 is
+    Port ( 
+        ADDR: in std_logic_vector(4 downto 0);
+        HASH_512: in std_logic_vector(511 downto 0);
+        PROM: out std_logic_vector(639 downto 0)
+    );
+end component get_sprite_512;
+
+signal clk25MHz       :std_logic; 
+signal locked_pll     :std_logic; 
+signal steady_clk25MHz:std_logic;
 
 signal hc, vc:std_logic_vector(9 downto 0); 
 signal video_on :std_logic; 
+
+signal IMG, IMG_224, IMG_256, IMG_384, IMG_512 :std_logic_vector(639 downto 0); 
+signal rom_addr4:std_logic_vector(4 downto 0); 
+
 signal clk25_count : integer;
 signal clk25_flag  : std_logic;
-
-signal IMG:std_logic_vector(639 downto 0); 
-signal rom_addr4:std_logic_vector(3 downto 0); 
 
 begin
 
@@ -132,7 +165,6 @@ begin
         end if;
     end process CLK_25;
 
-
 VGA_DRIVER: VGA_VHDL 
                      generic map (
                                   hpixels => strip_hpixels,
@@ -144,7 +176,7 @@ VGA_DRIVER: VGA_VHDL
                         
                                   )   
                      port map (
-                               clk   => CLK,
+                               clk   => clk,
                                clk25 => clk25_flag,
                                clr   => rst,
                                hsync => hsync,
@@ -158,28 +190,57 @@ INIT: vga_initials
     generic map ( hbp =>10, 
                   vbp =>31, 
                   W   =>640, 
-                  H   =>16 
+                  H   =>32 
                 )
     Port map ( 
-                   clk       => CLK,
-                   clk25 => clk25_flag,
+                   clk       => clk,
+                   clk25     => clk25_flag,
                    rst       => rst,
                    vidon     => video_on,
                    hc        => hc,
                    vc        => vc,
                    M         => IMG,
-                   --SW        => sw,
                    rom_addr4 => rom_addr4,
                    red       =>  red,
                    green     =>  green,
                    blue      =>  blue
          );
-         
-SPRITE: get_sprite port map(
-        ADDR => rom_addr4,
-        HASH_256 => hash,
-        PROM => IMG
-);
-         
+
+    SPRITE_224: get_sprite_224 port map(
+            ADDR => rom_addr4,
+            HASH_224 => hash_224,
+            PROM => IMG_224
+    );
+             
+    SPRITE_256: get_sprite_256 port map(
+            ADDR => rom_addr4,
+            HASH_256 => hash_256,
+            PROM => IMG_256
+    );
+    
+    SPRITE_384: get_sprite_384 port map(
+            ADDR => rom_addr4,
+            HASH_384 => hash_384,
+            PROM => IMG_384
+    );
+    
+    SPRITE_512: get_sprite_512 port map(
+            ADDR => rom_addr4,
+            HASH_512 => hash_512,
+            PROM => IMG_512
+    );         
+
+    IMG_SWITCH : process (CLK, RST, SW, IMG_224, IMG_256, IMG_384, IMG_512) begin
+        if ( RST = '1' ) then
+            IMG <= (others => '0');
+        elsif ( rising_edge(CLK) ) then
+            case SW is
+                when "00" => IMG <= IMG_224;
+                when "01" => IMG <= IMG_256;
+                when "10" => IMG <= IMG_384;
+                when "11" => IMG <= IMG_512;
+            end case;
+        end if;
+    end process IMG_SWITCH;
 
 end Behavioral;

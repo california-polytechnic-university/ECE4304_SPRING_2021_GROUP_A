@@ -33,15 +33,15 @@ use IEEE.math_real.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity get_sprite is
+entity get_sprite_512 is
     Port ( 
         ADDR: in std_logic_vector(4 downto 0);
-        HASH_256: in std_logic_vector(255 downto 0);
+        HASH_512: in std_logic_vector(511 downto 0);
         PROM: out std_logic_vector(639 downto 0)
     );
-end get_sprite;
+end get_sprite_512;
 
-architecture Behavioral of get_sprite is
+architecture Behavioral of get_sprite_512 is
 
 type sprite_array is array (0 to 183) of std_logic_vector(7 downto 0);
 signal sprites: sprite_array:= (
@@ -258,7 +258,7 @@ signal sprites: sprite_array:= (
                         "01000010",
                         "01000010",
                         "00111100"                                                                                                                                                                                                                             
-                        );           
+                        );            
                                                                                                                                                                                      
 type mem_type is array (0 to 31) of std_logic_vector(639 downto 0);
 signal mem: mem_type:= (
@@ -298,17 +298,14 @@ signal mem: mem_type:= (
                         
 begin
 
-GET_CHAR: for i in 0 to 6 generate 
-    INSERT_CHAR: for j in 0 to 7 generate 
-        mem(1+j)(8 + (8 * i) + 400 downto 1 + (8 * i) + 400) <= sprites((i+16) * 8 + j)(7 downto 0); 
-    end generate INSERT_CHAR;
-end generate GET_CHAR;
 
-GET_HEX : for i in 0 to 63 generate
-    INSERT_SPRITE : for j in 0 to 7 generate 
-        mem(12+j)(i*7+8 downto i*7+1) <= sprites(conv_integer(HASH_256((i+1)*4-1 downto i*4 )) * 8 + j)(7 downto 0);     
-    end generate INSERT_SPRITE;
-end generate GET_HEX;
+ROWS: for k in 0 to 1 generate
+    GET_HEX : for i in 0 to 63 generate
+        INSERT_SPRITE : for j in 0 to 7 generate 
+            mem(12+j+(-1*(11*(k-1))))(i*7+8 downto i*7+1) <= sprites(conv_integer(HASH_512(((64*k)+(i+1))*4-1 downto((64*k)+i)*4 )) * 8 + j)(7 downto 0);     
+        end generate INSERT_SPRITE;
+    end generate GET_HEX;
+end generate ROWS;
 
 PROM <= mem(conv_integer(ADDR));
 

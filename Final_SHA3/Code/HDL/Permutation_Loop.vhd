@@ -118,4 +118,3 @@ begin
     DATA_OUT <= OUTPUT_VAL;
     
 end Behavioral;
-
