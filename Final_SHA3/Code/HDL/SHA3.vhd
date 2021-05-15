@@ -1,10 +1,11 @@
--- File Name: Permutation_Loop.vhd
--- Purpose  : State machine controller to run a padded SHA3-256 input through 24 rounds of permutations from Permutation_Lanes.vhd
+-- File Name: SHA3.vhd
+-- Purpose  : State machine controller to run a padded message input through 24 rounds of permutations from Keccak_Permutation.vhd
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity Permutation_Loop is
+-- SHA-3 component
+entity SHA3 is
     Port ( 
         CLK : in std_logic;
         RST : in std_logic;
@@ -14,17 +15,17 @@ entity Permutation_Loop is
         DATA_OUT : out std_logic_vector(1599 downto 0);
         FINISH : out std_logic
     );
-end Permutation_Loop;
+end SHA3;
 
-architecture Behavioral of Permutation_Loop is
+architecture Behavioral of SHA3 is
 
-component Permutation_Lanes is
+component Keccak_Permutation is
     Port ( 
         IOTA_CONST : in std_logic_vector(63 downto 0);
         DATA_IN     : in std_logic_vector(1599 downto 0);
         DATA_OUT    : out std_logic_vector(1599 downto 0)
     );
-end component Permutation_Lanes;
+end component Keccak_Permutation;
 
     -- Declare IOTA constants as 2-d array that differs depending on permutation round
     type ARR is array(0 to 24, 63 downto 0) of std_logic;
@@ -55,7 +56,7 @@ begin
     end generate IOTA_GEN;
 
     -- KECCAK permutation component call
-    KECCAK_F : Permutation_Lanes 
+    KECCAK_F : Keccak_Permutation 
         port map ( 
             IOTA_CONST => IOTA_CONST_VECTOR,
             DATA_IN => CURRENT_VAL,

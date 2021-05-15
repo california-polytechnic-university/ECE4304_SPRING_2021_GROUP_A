@@ -5,15 +5,15 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity Permutation_Lanes is
+entity Keccak_Permutation is
     Port ( 
         IOTA_CONST : in std_logic_vector(63 downto 0);
         DATA_IN     : in std_logic_vector(1599 downto 0);
         DATA_OUT    : out std_logic_vector(1599 downto 0)
     );
-end Permutation_Lanes;
+end Keccak_Permutation;
 
-architecture Behavioral of Permutation_Lanes is
+architecture Behavioral of Keccak_Permutation is
 
 -- Overall memory for Keccak permutation for SHA-3 is a 5x5x64
 
