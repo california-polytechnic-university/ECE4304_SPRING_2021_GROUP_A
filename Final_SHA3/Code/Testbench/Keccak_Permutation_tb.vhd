@@ -1,4 +1,4 @@
--- File Name: Permutation_Lanes_tb.vhd
+-- File Name: Keccak_Permutation_tb.vhd
 -- Purpose  : Testbench the SHA3-256 algorithm for one round. (Input custom IOTA to denote which round) Outputs to TEXTIO file in HEX for easier reading.
 
 library IEEE;
@@ -6,19 +6,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 use std.textio.all;
 use ieee.std_logic_textio.all;
 
-entity Permutation_Lanes_tb is
+entity Keccak_Permutation_tb is
 --  Port ( );
-end Permutation_Lanes_tb;
+end Keccak_Permutation_tb;
 
-architecture Behavioral of Permutation_Lanes_tb is
+architecture Behavioral of Keccak_Permutation_tb is
 
-component Permutation_Lanes is
+component Keccak_Permutation is
     Port ( 
         IOTA_CONST : in std_logic_vector(63 downto 0);
         DATA_IN     : in std_logic_vector(1599 downto 0);
         DATA_OUT    : out std_logic_vector(1599 downto 0)
     );
-end component Permutation_Lanes;
+end component Keccak_Permutation;
 
 signal TB_IOTA : std_logic_vector(63 downto 0);
 signal TB_DATA_IN : std_logic_vector(1599 downto 0);
@@ -28,8 +28,7 @@ constant clock_period : time := 10ns;
 file file_results: text;
 
 begin
-
-    UUT: Permutation_Lanes 
+    UUT: Keccak_Permutation 
     port map(
         IOTA_CONST => TB_IOTA,
         DATA_IN => TB_DATA_IN,
