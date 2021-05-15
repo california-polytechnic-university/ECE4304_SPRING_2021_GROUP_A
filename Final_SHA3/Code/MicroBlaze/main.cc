@@ -2,6 +2,7 @@
 #include "xil_printf.h"
 #include "xparameters.h"
 #include "xuartlite.h"
+#include "xtmrctr.h"
 #include "sleep.h"
 #include "math.h"
 #include "stdlib.h"
@@ -10,10 +11,13 @@
 #define SHA3_ADDR XPAR_SHA_3_0_S00_AXI_BASEADDR
 #define BUFFER_SIZE 16
 #define UART_ID XPAR_AXI_UARTLITE_0_DEVICE_ID
+#define TIMER_ID XPAR_AXI_TIMER_0_DEVICE_ID
+
 // UART read buffer
 u8 RecvBuffer[BUFFER_SIZE];
-uint32_t values[50];
+
 XUartLite UART;
+XTmrCtr TIMER;
 
 /* Read AXI registers
  @mode : integer: 0-3 denote the SHA-3 hash modes.
@@ -143,9 +147,11 @@ int main()
 {
 	// Initialize UART
 	XUartLite_Initialize(&UART, UART_ID);
+	XTmrCtr_Initialize(&TIMER, TIMER_ID);
 
 	while(1)
 	{
+		XTmrCtr_Reset(&TIMER, 0);	// Reset Timer to 0
 		xil_printf("*****Insert input message (TEXT)******");
 		xil_printf("\n\r");
 		usleep(1500);	// Delay to allow UART print to catch up
@@ -157,14 +163,23 @@ int main()
 		uint32_t go = 0x1;
 		uint32_t stop = 0x0;
 		uint32_t ready = 0x2;
-		// Start encryption
+		uint32_t time;
+		// Start encryption and timer
 		SHA_3_mWriteReg(SHA3_ADDR, SHA_3_S00_AXI_SLV_REG52_OFFSET, go);
-		usleep(5);
+		XTmrCtr_Start(&TIMER, 0);
+
+		while( !(SHA_3_mReadReg(SHA3_ADDR, SHA_3_S00_AXI_SLV_REG53_OFFSET) & 0x1) ); // Wait for done flag from SHA-3 IP
+
+		time = XTmrCtr_GetValue(&TIMER, 0); // Grab timer value
+
 		// Stop encryption
 		SHA_3_mWriteReg(SHA3_ADDR, SHA_3_S00_AXI_SLV_REG52_OFFSET, stop);
 		usleep(5);
 		// Ready core
 		SHA_3_mWriteReg(SHA3_ADDR, SHA_3_S00_AXI_SLV_REG52_OFFSET, ready);
+
+		// Calculate and print timer value
+		xil_printf("Clock cycles (10 ns) : %u\n", time);
 
 		// Computation is done by now (10 us more than enough)
 		// Read and print value inputted into algorithm
@@ -192,6 +207,7 @@ int main()
 		// SHA3-512
 		xil_printf("Output Hash (512 bits): ");
 		ReadRegisters(3, false);
+		xil_printf("\n\n\r");
 	}
 
 	return 0;
