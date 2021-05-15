@@ -298,6 +298,12 @@ signal mem: mem_type:= (
                         
 begin
 
+GET_CHAR: for i in 0 to 6 generate 
+    INSERT_CHAR: for j in 0 to 7 generate 
+        mem(1+j)(8 + (8 * i) + 400 downto 1 + (8 * i) + 400) <= sprites((i+16) * 8 + j)(7 downto 0); 
+    end generate INSERT_CHAR;
+end generate GET_CHAR;
+
 GET_HEX : for i in 0 to 55 generate
     INSERT_SPRITE : for j in 0 to 7 generate 
         mem(12+j)(i*7+8 downto i*7+1) <= sprites(conv_integer(HASH_224((i+1)*4-1 downto i*4 )) * 8 + j)(7 downto 0);     
