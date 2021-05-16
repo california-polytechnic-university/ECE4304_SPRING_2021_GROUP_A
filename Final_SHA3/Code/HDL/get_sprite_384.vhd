@@ -300,11 +300,6 @@ begin
 
 -- O = 16th 
 -- O U T P U T
-GET_CHAR: for i in 0 to 6 generate 
-    INSERT_CHAR: for j in 0 to 7 generate 
-        mem(1+j)(8 + (8 * i) + 400 downto 1 + (8 * i) + 400) <= sprites((i+16) * 8 + j)(7 downto 0); 
-    end generate INSERT_CHAR;
-end generate GET_CHAR;
 
 
 ---------------------------------------

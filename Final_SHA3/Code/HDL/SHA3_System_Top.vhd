@@ -25,7 +25,7 @@ entity SHA3_System_Top is
         TOP_GO      : in std_logic;
         TOP_RDY     : in std_logic;
         TOP_DATA_IN : in std_logic_vector(1143 downto 0); 
-        TOP_DATA_OUT: out std_logic_vector(1599 downto 0);
+        TOP_DATA_OUT: out std_logic_vector(511 downto 0);
         TOP_FINISH  : out std_logic
     );
 end SHA3_System_Top;
@@ -226,6 +226,6 @@ begin
     );
     
     -- Pass output to output port
-    TOP_DATA_OUT <= SHA3_Output;
+    TOP_DATA_OUT <= SHA3_Output (1599 downto 1088);
 
 end Behavioral;
