@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity SHA_3_v1_0 is
+entity SHA_3_v2_0 is
 	generic (
 		-- Users to add parameters here
 
@@ -12,7 +12,7 @@ entity SHA_3_v1_0 is
 
 		-- Parameters of Axi Slave Bus Interface S00_AXI
 		C_S00_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S00_AXI_ADDR_WIDTH	: integer	:= 9
+		C_S00_AXI_ADDR_WIDTH	: integer	:= 8
 	);
 	port (
 		-- Users to add ports here
@@ -26,6 +26,7 @@ entity SHA_3_v1_0 is
         CAG  : out std_logic_vector(6 downto 0);
         AN   : out std_logic_vector(7 downto 0);
         DP   : out std_logic;
+		-- User ports ends
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -53,18 +54,18 @@ entity SHA_3_v1_0 is
 		s00_axi_rvalid	: out std_logic;
 		s00_axi_rready	: in std_logic
 	);
-end SHA_3_v1_0;
+end SHA_3_v2_0;
 
-architecture arch_imp of SHA_3_v1_0 is
+architecture arch_imp of SHA_3_v2_0 is
 
 	-- component declaration
-	component SHA_3_v1_0_S00_AXI is
+	component SHA_3_v2_0_S00_AXI is
 		generic (
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S_AXI_ADDR_WIDTH	: integer	:= 9
+		C_S_AXI_ADDR_WIDTH	: integer	:= 8
 		);
 		port (
-        I_SW   : in std_logic_vector(1 downto 0);
+		I_SW   : in std_logic_vector(1 downto 0);
         O_HSYNC: out std_logic;
         O_VSYNC: out std_logic; 
         O_RED  : out std_logic_vector (3 downto 0); 
@@ -95,18 +96,18 @@ architecture arch_imp of SHA_3_v1_0 is
 		S_AXI_RVALID	: out std_logic;
 		S_AXI_RREADY	: in std_logic
 		);
-	end component SHA_3_v1_0_S00_AXI;
+	end component SHA_3_v2_0_S00_AXI;
 
 begin
 
 -- Instantiation of Axi Bus Interface S00_AXI
-SHA_3_v1_0_S00_AXI_inst : SHA_3_v1_0_S00_AXI
+SHA_3_v2_0_S00_AXI_inst : SHA_3_v2_0_S00_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S00_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
-	    I_SW       => SW,
+		I_SW       => SW,
 	    O_HSYNC    => HSYNC,
         O_VSYNC    => VSYNC,
         O_RED      => RED,
