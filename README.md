@@ -11,7 +11,7 @@
  * **Lab6_24_March_2021**    - *Lab 6: Barrel Rotator*
  * **Lab7_07_April_2021**    - *Lab 7: ALU/Barrel Rotator/UART System*
  * **Lab8_26_April_2021**    - *Lab 8: Colored VGA with UART*
- * **FinalProject_17_May_2021** - *Final Project: SHA-3 System with UART/VGA/7-segment Display using MicroBlaze*
+ * **FinalProject_17_May_2021** - *Final Project: SHA-3 System with UART/VGA/7-Segment Display using MicroBlaze*
 
 ## Students
  * Yuta Akiya - yakiya@cpp.edu
