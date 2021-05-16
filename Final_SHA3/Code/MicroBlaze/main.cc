@@ -152,9 +152,16 @@ int main()
 	while(1)
 	{
 		XTmrCtr_Reset(&TIMER, 0);	// Reset Timer to 0
-		xil_printf("*****Insert input message (TEXT)******");
-		xil_printf("\n\r");
+		xil_printf("SHA-3 UART MESSAGE INTERFACE\n");
+		xil_printf("NOTE:\n");
+		xil_printf("\tMax SHA-3 224 is 143 character input\n");
+		xil_printf("\tMax SHA-3 256 is 135 character input\n");
+		xil_printf("\tMax SHA-3 384 is 103 character input\n");
+		xil_printf("\tMax SHA-3 512 is 71 character input\n");
+		xil_printf("Any extra will be truncated\n\r");
 		usleep(1500);	// Delay to allow UART print to catch up
+		xil_printf("**Insert input message (TEXT)**\n");
+		usleep(1500);
 
 		// Read text input from UART
 		ReadUART();
@@ -179,15 +186,15 @@ int main()
 		SHA_3_mWriteReg(SHA3_ADDR, SHA_3_S00_AXI_SLV_REG52_OFFSET, ready);
 
 		// Calculate and print timer value
-		xil_printf("Clock cycles (10 ns) : %u\n", time);
+		xil_printf("Execution Clock cycles (10 ns) : %u\n", time);
 
 		// Computation is done by now (10 us more than enough)
 		// Read and print value inputted into algorithm
 
-		// Display the input message as hex
-		xil_printf("Input MSG (HEX): ");
-		ReadRegisters(0, true);
-		xil_printf("\n\r");
+		// (Debug) Display the input message as hex
+		//xil_printf("Input MSG (HEX): ");
+		//ReadRegisters(0, true);
+		//xil_printf("\n\r");
 
 		// Display the input message as text
 		xil_printf("Input MSG (TXT): ");
@@ -207,7 +214,7 @@ int main()
 		// SHA3-512
 		xil_printf("Output Hash (512 bits): ");
 		ReadRegisters(3, false);
-		xil_printf("\n\n\r");
+		xil_printf("\n\r");
 	}
 
 	return 0;
