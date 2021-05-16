@@ -1,0 +1,8 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../SHA3.srcs/sources_1/new/Permutation_Lanes.vhd" \
+"../../../../SHA3.srcs/sources_1/new/Permutation_Loop.vhd" \
+"../../../../SHA3.srcs/sim_1/new/Permutation_Loop_tb.vhd" \
+
+# Do not sort compile order
+nosort

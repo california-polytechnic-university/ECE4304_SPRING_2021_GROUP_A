@@ -1,0 +1,15 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Sun May 16 02:32:13 2021
+# Process ID: 5168
+# Current directory: C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent25984 C:\Users\kylet\GoogleDrive\Sync\ECE_4304\SHA3_Test\SHA3\SHA3.xpr
+# Log file: C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3/vivado.log
+# Journal file: C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3/SHA3.xpr
+update_compile_order -fileset sources_1
+archive_project C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3.xpr.zip -temp_dir C:/Users/kylet/GoogleDrive/Sync/ECE_4304/SHA3_Test/SHA3/.Xil/Vivado-5168-K-ANI -force -exclude_run_results -include_local_ip_cache -include_config_settings

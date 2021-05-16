@@ -1,0 +1,32 @@
+vhdl xil_defaultlib  \
+"../../../bd/design_1/ip/design_1_axi_uartlite_0_1/sim/design_1_axi_uartlite_0_1.vhd" \
+"../../../bd/design_1/ip/design_1_microblaze_0_4/sim/design_1_microblaze_0_4.vhd" \
+"../../../bd/design_1/ip/design_1_dlmb_v10_3/sim/design_1_dlmb_v10_3.vhd" \
+"../../../bd/design_1/ip/design_1_ilmb_v10_3/sim/design_1_ilmb_v10_3.vhd" \
+"../../../bd/design_1/ip/design_1_dlmb_bram_if_cntlr_3/sim/design_1_dlmb_bram_if_cntlr_3.vhd" \
+"../../../bd/design_1/ip/design_1_ilmb_bram_if_cntlr_3/sim/design_1_ilmb_bram_if_cntlr_3.vhd" \
+"../../../bd/design_1/ip/design_1_mdm_1_0/sim/design_1_mdm_1_0.vhd" \
+"../../../bd/design_1/ip/design_1_rst_sys_clk_100M_0/sim/design_1_rst_sys_clk_100M_0.vhd" \
+"../../../bd/design_1/ipshared/085c/src/B2BCD_Nbit.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Counter.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Decoder_7seg.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Keccak_Permutation.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Message_Prepare.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Mux_Nx1.vhd" \
+"../../../bd/design_1/ipshared/085c/src/SHA3.vhd" \
+"../../../bd/design_1/ipshared/085c/src/SHA3_System_Top.vhd" \
+"../../../bd/design_1/ipshared/085c/hdl/SHA_3_v2_0_S00_AXI.vhd" \
+"../../../bd/design_1/ipshared/085c/src/Top_7seg.vhd" \
+"../../../bd/design_1/ipshared/085c/src/VGA_Top.vhd" \
+"../../../bd/design_1/ipshared/085c/src/VGA_VHDL.vhd" \
+"../../../bd/design_1/ipshared/SHA_3_1.0/src/get_sprite_224.vhd" \
+"../../../bd/design_1/ipshared/SHA_3_1.0/src/get_sprite_256.vhd" \
+"../../../bd/design_1/ipshared/SHA_3_1.0/src/get_sprite_384.vhd" \
+"../../../bd/design_1/ipshared/SHA_3_1.0/src/get_sprite_512.vhd" \
+"../../../bd/design_1/ipshared/SHA_3_1.0/src/vga_initials.vhd" \
+"../../../bd/design_1/ipshared/085c/hdl/SHA_3_v2_0.vhd" \
+"../../../bd/design_1/ip/design_1_SHA_3_0_2/sim/design_1_SHA_3_0_2.vhd" \
+"../../../bd/design_1/ip/design_1_axi_timer_0_0/sim/design_1_axi_timer_0_0.vhd" \
+"../../../bd/design_1/sim/design_1.vhd" \
+
+nosort

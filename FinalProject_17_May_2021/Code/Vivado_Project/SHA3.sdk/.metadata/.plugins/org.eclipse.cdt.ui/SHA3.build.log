@@ -1,0 +1,21 @@
+12:04:16 **** Auto Build of configuration Debug for project SHA3 ****
+make all 
+'Building file: ../src/main.cc'
+'Invoking: MicroBlaze g++ compiler'
+mb-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -I../../SHA3_bsp/microblaze_0/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: SHA3.elf'
+'Invoking: MicroBlaze g++ linker'
+mb-g++ -Wl,-T -Wl,../src/lscript.ld -L../../SHA3_bsp/microblaze_0/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "SHA3.elf"  ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group
+'Finished building target: SHA3.elf'
+' '
+'Invoking: MicroBlaze Print Size'
+mb-size SHA3.elf  |tee "SHA3.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  13064	    668	   3236	  16968	   4248	SHA3.elf
+'Finished building: SHA3.elf.size'
+' '
+
+12:04:17 Build Finished (took 482ms)
+
