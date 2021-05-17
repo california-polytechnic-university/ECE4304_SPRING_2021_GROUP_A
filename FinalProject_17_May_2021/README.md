@@ -28,15 +28,16 @@ https://youtu.be/_xKKbD2_C4o
 https://youtu.be/dnKnt28N3SQ 
 
 ## Project Hierarchy
-* Code - All the relevant code and Vivado files related to the project.
-  * HDL - Any VHDL sources used to design the system.
-  * MicroBlaze - C++ file used for MicroBlaze integration with UART and AXI.
-  * SHA3_IP - IP VHDL sources for configuring the custom IP with AXI and the HDL.
-  * Testbench - Testbench sources and output files that were used.
-  * Vivado_Project - An archive of the Vivado Project used. Includes already generated bitstream and prepared files.
-* Deliverables - All the powerpoint and document deliverables.
-  * SHA_3_DemoLink.docx - Word document with demonstration video link.
-  * SHA3_IEEE_Report.docx - Word document with the formal IEEE report.
-  * SHA3_Poster.pptx - Powerpoint document with the IEEE poster.
-  * SHA3_Presentation.pptx - Powerpoint document used for the presentation video.
-  * SHA3_PresentationLink.docx - Word document with presentation video link.
+* Code - All the relevant code and Vivado files related to the project
+  * HDL - Any VHDL sources used to design the system
+  * MicroBlaze - C++ file used for MicroBlaze integration with UART and AXI
+  * SHA3_IP - IP VHDL sources for configuring the custom IP with AXI and the HDL
+  * Testbench - Testbench sources and output files that were used
+  * Vivado_Project - An archive of the Vivado Project used. Includes already generated bitstream and prepared files
+* Deliverables - All the powerpoint and document deliverables
+  * SHA_3_DemoLink.docx - Word document with demonstration video link
+  * SHA3_IEEE_Report.docx - Word document with the formal IEEE report
+  * SHA3_Poster.pptx - Powerpoint document with the IEEE poster
+  * SHA3_Presentation.pptx - Powerpoint document used for the presentation video
+  * SHA3_PresentationLink.docx - Word document with presentation video link
+  * Contributions.docx - Word document with the member contributions
