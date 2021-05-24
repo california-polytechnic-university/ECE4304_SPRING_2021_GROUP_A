@@ -1,4 +1,5 @@
-# ECE 4304 Spring 2021 Group A with Dr. Aly
+# ECE 4304 Spring 2021 Group A 
+# Professor: Mohamed El-Hadedy (Aly): Assistant Professor, ECE-department, College of Engineering, California State Polytechnic University, Pomona 
 
  This repository holds all of the labs and reports done in ECE 4304, a class offered in the Electrical and Computer Engineering department at California State Polytechnic University, Pomona.
  
